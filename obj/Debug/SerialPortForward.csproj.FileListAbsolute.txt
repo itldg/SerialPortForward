@@ -1,0 +1,12 @@
+E:\Projects\SerialPortForward\bin\Debug\SerialPortForward.exe.config
+E:\Projects\SerialPortForward\bin\Debug\SerialPortForward.exe
+E:\Projects\SerialPortForward\bin\Debug\SerialPortForward.pdb
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.AssemblyReference.cache
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.SuggestedBindingRedirects.cache
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.FrmMain.resources
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.FrmMoreSerial.resources
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.Properties.Resources.resources
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.GenerateResource.cache
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.CoreCompileInputs.cache
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.exe
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.pdb
