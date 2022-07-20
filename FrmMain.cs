@@ -246,36 +246,15 @@ namespace SerialPortForward
         }
         void AddLog(string hex, byte[] data,string name,bool left,bool send,SerialPort sp)
         {
+            Color color= Color.DarkBlue;
+            if (!left)
+            {
+                color = Color.DarkGreen;
+            }
+            serialLog1.AddLog(name,color,hex);
             this.Invoke((MethodInvoker)delegate ()
             {
-                rtbLog.SelectionStart = rtbLog.Text.Length;
-                if (left)
-                {
-                    rtbLog.SelectionColor = Color.DarkBlue;
-                }
-                else
-                {
-                    rtbLog.SelectionColor = Color.DarkGreen;
-                }
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(name + " " + DateTime.Now.ToString("HH:mm:ss"));
-                sb.Append("HEX：");
-                
-                
-                for (int i = 0; i < hex.Length; i+=2)
-                {
-                    if (i!=0)
-                    {
-                        sb.Append(" ");
-                    }
-                    sb.Append(hex.Substring(i, 2));
-                }
-                sb.AppendLine();
-                sb.AppendLine("TXT：" + HexToAscii(hex));
-                sb.AppendLine();
-                rtbLog.AppendText(sb.ToString());
-                Application.DoEvents();
-                rtbLog.SelectionColor = Color.Black;
+
                 if (hex.Contains("0D0D0A"))
                 {
                     //忽略转发连接的消息
@@ -376,43 +355,8 @@ namespace SerialPortForward
             }
             return returnStr;
         }
-        Regex regLogCopy = new Regex(@"(.*?\d{2}:\d{2})\sHEX：");
-        Regex regLogRemoveText = new Regex(@"TXT：[\s\S]*?\s*\n\n");
-        private void btnCopyLog_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string alltext = rtbLog.Text;
-                string result = regLogRemoveText.Replace(alltext, "");
-                result = regLogCopy.Replace(result, "$1\t");
-                Clipboard.SetText(result);
-                MessageBox.Show("复制日志完成", "复制成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "复制失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
 
-        }
 
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            rtbLog.Clear();
-        }
-        bool LogAutoScroll = true;
-        private void rtbLog_TextChanged(object sender, EventArgs e)
-        {
-            if (LogAutoScroll)
-            {
-                rtbLog.SelectionStart = rtbLog.TextLength;
-                rtbLog.ScrollToCaret();
-            }
-        }
-        
-        private void chkAutoScroll_CheckedChanged(object sender, EventArgs e)
-        {
-            LogAutoScroll = chkAutoScroll.Checked;
-        }
 
         private void btnCom1_Click(object sender, EventArgs e)
         {
@@ -494,19 +438,9 @@ namespace SerialPortForward
             }
         }
 
-        private void btnCopy_Click(object sender, EventArgs e)
+        private void serialLog1_Load(object sender, EventArgs e)
         {
-            try
-            {
-                rtbLog.SelectAll();
-                rtbLog.Copy();
-                rtbLog.SelectionStart = rtbLog.TextLength;
-                MessageBox.Show("复制日志完成", "复制成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "复制失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+
         }
 
         void ComBaudChange(SerialPort sp,ComboBox cmb)

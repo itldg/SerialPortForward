@@ -10,3 +10,6 @@ E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.GenerateResourc
 E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.CoreCompileInputs.cache
 E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.exe
 E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.pdb
+E:\Projects\SerialPortForward\bin\Debug\ITLDG.dll
+E:\Projects\SerialPortForward\bin\Debug\ITLDG.pdb
+E:\Projects\SerialPortForward\obj\Debug\SerialPortForward.csproj.CopyComplete

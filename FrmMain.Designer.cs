@@ -45,15 +45,9 @@
             this.txtName1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtName2 = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rtbLog = new System.Windows.Forms.RichTextBox();
-            this.chkAutoScroll = new System.Windows.Forms.CheckBox();
-            this.btnCopyLog = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.btnCopy = new System.Windows.Forms.Button();
             this.btnCom1 = new System.Windows.Forms.Button();
             this.btnCom2 = new System.Windows.Forms.Button();
-            this.groupBox1.SuspendLayout();
+            this.serialLog1 = new ITLDG.SerialLog();
             this.SuspendLayout();
             // 
             // cmbBaudRate2
@@ -246,79 +240,6 @@
             this.txtName2.TabIndex = 35;
             this.txtName2.TextChanged += new System.EventHandler(this.txtName2_TextChanged);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.rtbLog);
-            this.groupBox1.Controls.Add(this.chkAutoScroll);
-            this.groupBox1.Location = new System.Drawing.Point(12, 62);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(786, 376);
-            this.groupBox1.TabIndex = 36;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "日志记录";
-            // 
-            // rtbLog
-            // 
-            this.rtbLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rtbLog.Location = new System.Drawing.Point(3, 17);
-            this.rtbLog.Name = "rtbLog";
-            this.rtbLog.Size = new System.Drawing.Size(780, 356);
-            this.rtbLog.TabIndex = 1;
-            this.rtbLog.Text = "";
-            this.rtbLog.TextChanged += new System.EventHandler(this.rtbLog_TextChanged);
-            // 
-            // chkAutoScroll
-            // 
-            this.chkAutoScroll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkAutoScroll.AutoSize = true;
-            this.chkAutoScroll.Checked = true;
-            this.chkAutoScroll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAutoScroll.Location = new System.Drawing.Point(448, 0);
-            this.chkAutoScroll.Name = "chkAutoScroll";
-            this.chkAutoScroll.Size = new System.Drawing.Size(72, 16);
-            this.chkAutoScroll.TabIndex = 0;
-            this.chkAutoScroll.Text = "自动滚动";
-            this.chkAutoScroll.UseVisualStyleBackColor = true;
-            this.chkAutoScroll.CheckedChanged += new System.EventHandler(this.chkAutoScroll_CheckedChanged);
-            // 
-            // btnCopyLog
-            // 
-            this.btnCopyLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopyLog.Location = new System.Drawing.Point(629, 58);
-            this.btnCopyLog.Name = "btnCopyLog";
-            this.btnCopyLog.Size = new System.Drawing.Size(101, 23);
-            this.btnCopyLog.TabIndex = 1;
-            this.btnCopyLog.Text = "复制文本记录";
-            this.btnCopyLog.UseVisualStyleBackColor = true;
-            this.btnCopyLog.Click += new System.EventHandler(this.btnCopyLog_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClear.Location = new System.Drawing.Point(739, 58);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(58, 23);
-            this.btnClear.TabIndex = 1;
-            this.btnClear.Text = "清空";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // btnCopy
-            // 
-            this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopy.Location = new System.Drawing.Point(548, 58);
-            this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(70, 23);
-            this.btnCopy.TabIndex = 1;
-            this.btnCopy.Text = "复制记录";
-            this.btnCopy.UseVisualStyleBackColor = true;
-            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
-            // 
             // btnCom1
             // 
             this.btnCom1.Location = new System.Drawing.Point(739, 4);
@@ -339,17 +260,24 @@
             this.btnCom2.UseVisualStyleBackColor = true;
             this.btnCom2.Click += new System.EventHandler(this.btnCom2_Click);
             // 
+            // serialLog1
+            // 
+            this.serialLog1.Location = new System.Drawing.Point(10, 59);
+            this.serialLog1.LogAutoScroll = true;
+            this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
+            this.serialLog1.Name = "serialLog1";
+            this.serialLog1.SerialLogType = ITLDG.LogType.HEX_And_TEXT;
+            this.serialLog1.Size = new System.Drawing.Size(785, 379);
+            this.serialLog1.TabIndex = 38;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 450);
+            this.Controls.Add(this.serialLog1);
             this.Controls.Add(this.btnCom2);
             this.Controls.Add(this.btnCom1);
-            this.Controls.Add(this.btnClear);
-            this.Controls.Add(this.btnCopy);
-            this.Controls.Add(this.btnCopyLog);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txtName2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtName1);
@@ -371,8 +299,6 @@
             this.Text = "串口转发";
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.Shown += new System.EventHandler(this.FrmMain_Shown);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -396,14 +322,9 @@
         private System.Windows.Forms.TextBox txtName1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtName2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox chkAutoScroll;
-        private System.Windows.Forms.Button btnCopyLog;
-        private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.RichTextBox rtbLog;
-        private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.Button btnCom1;
         private System.Windows.Forms.Button btnCom2;
+        private ITLDG.SerialLog serialLog1;
     }
 }
 

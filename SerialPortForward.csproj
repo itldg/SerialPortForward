@@ -96,5 +96,11 @@
   <ItemGroup>
     <Content Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ITLDG.SerialLog\ITLDG.csproj">
+      <Project>{295f7eb9-ed3b-4210-b01a-ae7de140da0b}</Project>
+      <Name>ITLDG</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

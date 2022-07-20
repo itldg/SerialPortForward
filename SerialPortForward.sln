@@ -5,6 +5,10 @@ VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortForward", "SerialPortForward.csproj", "{14886C9C-A69E-44FF-967A-CE63B66110D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITLDG", "..\ITLDG.SerialLog\ITLDG.csproj", "{295F7EB9-ED3B-4210-B01A-AE7DE140DA0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITLDG.Core", "..\ITLDG.Core\ITLDG.Core.csproj", "{28DD9BFB-7101-4375-95F9-DD9F9FD91F99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{14886C9C-A69E-44FF-967A-CE63B66110D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14886C9C-A69E-44FF-967A-CE63B66110D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14886C9C-A69E-44FF-967A-CE63B66110D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295F7EB9-ED3B-4210-B01A-AE7DE140DA0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295F7EB9-ED3B-4210-B01A-AE7DE140DA0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295F7EB9-ED3B-4210-B01A-AE7DE140DA0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295F7EB9-ED3B-4210-B01A-AE7DE140DA0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28DD9BFB-7101-4375-95F9-DD9F9FD91F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28DD9BFB-7101-4375-95F9-DD9F9FD91F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28DD9BFB-7101-4375-95F9-DD9F9FD91F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28DD9BFB-7101-4375-95F9-DD9F9FD91F99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
