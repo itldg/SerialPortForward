@@ -97,7 +97,7 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ITLDG.SerialLog\ITLDG.csproj">
+    <ProjectReference Include="..\ITLDG\ITLDG.csproj">
       <Project>{295f7eb9-ed3b-4210-b01a-ae7de140da0b}</Project>
       <Name>ITLDG</Name>
     </ProjectReference>
