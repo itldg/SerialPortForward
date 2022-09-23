@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace SerialPortForward
 {
@@ -22,7 +23,7 @@ namespace SerialPortForward
         {
             InitializeComponent();
         }
-        SerialPort com1 = new SerialPort(), com2= new SerialPort();
+        SerialPortInfo com1 = new SerialPortInfo(), com2= new SerialPortInfo();
         string com1Name="", com2Name = "";
         bool com1Forward = true, com2Forward = true;
         bool SerialCheck()
@@ -40,19 +41,6 @@ namespace SerialPortForward
                 return false;
             }
             return true;
-        }
-        void CloseSerialPort()
-        {
-            try
-            {
-                com2.Close();
-                com2.Dispose();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
         }
         private void Com2_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -74,6 +62,7 @@ namespace SerialPortForward
             List<byte> result = new List<byte>();
             while (true)//循环读
             {
+                //蓝光串口过快,延迟不会发送
                 System.Threading.Thread.Sleep(30);
                 if (!spReceive.IsOpen)//串口被关了，不读了
                     break;
@@ -130,6 +119,7 @@ namespace SerialPortForward
                 if (fms.ShowDialog() == DialogResult.OK)
                 {
                     SaveSerialOption();
+                    ReadSerialOption();
                 }
             }
             else
@@ -146,7 +136,7 @@ namespace SerialPortForward
             SerialSave(com2, "Com2", ini);
             SerialOtherSave(ini);
         }
-        void SerialSave(SerialPort sp, string Name, INIFileHelper ini)
+        void SerialSave(SerialPortInfo sp, string Name, INIFileHelper ini)
         {
             ini.IniWriteValue(Name, "PortName", sp.PortName.ToString());
             ini.IniWriteValue(Name, "Stop", sp.StopBits.ToString());
@@ -155,6 +145,7 @@ namespace SerialPortForward
             ini.IniWriteValue(Name, "Dtr", sp.DtrEnable.ToString());
             ini.IniWriteValue(Name, "Rts", sp.RtsEnable.ToString());
             ini.IniWriteValue(Name, "BaudRate", sp.BaudRate.ToString());
+            ini.IniWriteValue(Name, "Timer", sp.Timer.ToString());
         }
         void SerialOtherSave(INIFileHelper ini)
         {
@@ -181,7 +172,7 @@ namespace SerialPortForward
             SerialRead(com2, "Com2",cmbBaudRate2, ini);
             SerialOtherRead(ini);
         }
-        void SerialRead(SerialPort sp, string Name,ComboBox cmb, INIFileHelper ini)
+        void SerialRead(SerialPortInfo sp, string Name,ComboBox cmb, INIFileHelper ini)
         {
             sp.PortName=ini.IniReadValue(Name, "PortName", sp.PortName.ToString());
             sp.StopBits = (StopBits)Enum.Parse(typeof(StopBits), ini.IniReadValue(Name, "Stop", sp.StopBits.ToString()));
@@ -190,6 +181,7 @@ namespace SerialPortForward
             sp.DtrEnable = Convert.ToBoolean(ini.IniReadValue(Name, "Dtr", sp.DtrEnable.ToString()));
             sp.RtsEnable = Convert.ToBoolean(ini.IniReadValue(Name, "Rts", sp.RtsEnable.ToString()));
             sp.BaudRate = Convert.ToInt32(ini.IniReadValue(Name, "BaudRate", "9600"));
+            sp.Timer = Convert.ToInt32(ini.IniReadValue(Name, "Timer", "0"));
 
             cmb.Text = sp.BaudRate.ToString();
         }
@@ -370,7 +362,14 @@ namespace SerialPortForward
                     {
                         com1.PortName = com1NameTemp;
                         com1.BaudRate = Convert.ToInt32(cmbBaudRate1.Text);
-                        com1.DataReceived += Com1_DataReceived;
+                        if (com1.Timer > 0)
+                        {
+                            timerCom1.Interval = com1.Timer;
+                            timerCom1.Enabled = true;
+                        }
+                        else {
+                            com1.DataReceived += Com1_DataReceived;
+                        }
                         com1.Open();
                         SaveSerialOption();
                     }
@@ -385,6 +384,7 @@ namespace SerialPortForward
             }
             else
             {
+                timerCom1.Enabled = false;
                 try
                 {
                     com1.Close();
@@ -410,7 +410,15 @@ namespace SerialPortForward
                     {
                         com2.PortName = com2NameTemp;
                         com2.BaudRate = Convert.ToInt32(cmbBaudRate2.Text);
-                        com2.DataReceived += Com2_DataReceived;
+                        if (com2.Timer > 0)
+                        {
+                            timerCom2.Interval = com2.Timer;
+                            timerCom2.Enabled = true;
+                        }
+                        else
+                        {
+                            com2.DataReceived += Com2_DataReceived;
+                        }
                         com2.Open();
                         SaveSerialOption();
                     }
@@ -425,6 +433,7 @@ namespace SerialPortForward
             }
             else
             {
+                timerCom2.Enabled = false;
                 try
                 {
                     com2.Close();
@@ -443,12 +452,44 @@ namespace SerialPortForward
 
         }
 
-        void ComBaudChange(SerialPort sp,ComboBox cmb)
+        private void timerCom1_Tick(object sender, EventArgs e)
         {
-            int baud = 0;
-            if (int.TryParse(cmbBaudRate2.Text,out baud))
+            DataShow(com1Name, true, com1Forward, com1, com2);
+        }
+
+        private void timerCom2_Tick(object sender, EventArgs e)
+        {
+            DataShow(com2Name, false, com2Forward, com2, com1);
+        }
+        void DataShow(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
+        {
+            if (!spReceive.IsOpen)
             {
-                com2.BaudRate = baud;
+                return;
+            }
+            try
+            {
+                int length = spReceive.BytesToRead;
+                if (length == 0)//没数据，退出去
+                    return;
+                byte[] rev = new byte[length];
+                spReceive.Read(rev, 0, length);//读数据
+                if (rev.Length == 0)
+                    return;
+
+                string strHex = ByteToHex(rev);
+                AddLog(strHex, rev, name, left, send, spSend);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }//崩了？
+        }
+        void ComBaudChange(SerialPortInfo sp,ComboBox cmb)
+        {
+            if (int.TryParse(cmb.Text,out int baud))
+            {
+                sp.BaudRate = baud;
             }
         }
 

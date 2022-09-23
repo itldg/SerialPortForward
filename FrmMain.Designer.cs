@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.cmbBaudRate2 = new System.Windows.Forms.ComboBox();
             this.cmbBaudRate1 = new System.Windows.Forms.ComboBox();
@@ -48,6 +49,8 @@
             this.btnCom1 = new System.Windows.Forms.Button();
             this.btnCom2 = new System.Windows.Forms.Button();
             this.serialLog1 = new ITLDG.SerialLog();
+            this.timerCom1 = new System.Windows.Forms.Timer(this.components);
+            this.timerCom2 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // cmbBaudRate2
@@ -264,11 +267,22 @@
             // 
             this.serialLog1.Location = new System.Drawing.Point(10, 59);
             this.serialLog1.LogAutoScroll = true;
+            this.serialLog1.LogEnable = true;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
             this.serialLog1.Name = "serialLog1";
+            this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
+            this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
             this.serialLog1.SerialLogType = ITLDG.LogType.HEX_And_TEXT;
             this.serialLog1.Size = new System.Drawing.Size(785, 379);
             this.serialLog1.TabIndex = 38;
+            // 
+            // timerCom1
+            // 
+            this.timerCom1.Tick += new System.EventHandler(this.timerCom1_Tick);
+            // 
+            // timerCom2
+            // 
+            this.timerCom2.Tick += new System.EventHandler(this.timerCom2_Tick);
             // 
             // FrmMain
             // 
@@ -325,6 +339,8 @@
         private System.Windows.Forms.Button btnCom1;
         private System.Windows.Forms.Button btnCom2;
         private ITLDG.SerialLog serialLog1;
+        private System.Windows.Forms.Timer timerCom1;
+        private System.Windows.Forms.Timer timerCom2;
     }
 }
 
