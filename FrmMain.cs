@@ -1,10 +1,12 @@
 ﻿using DotNet.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
@@ -19,12 +21,14 @@ namespace SerialPortForward
 {
     public partial class FrmMain : Form
     {
+        private Dictionary<string, string> dicCache = new Dictionary<string, string>();
+        private string lastSendHex = "";
         public FrmMain()
         {
             InitializeComponent();
         }
-        SerialPortInfo com1 = new SerialPortInfo(), com2= new SerialPortInfo();
-        string com1Name="", com2Name = "";
+        SerialPortInfo com1 = new SerialPortInfo(), com2 = new SerialPortInfo();
+        string com1Name = "", com2Name = "";
         bool com1Forward = true, com2Forward = true;
         bool SerialCheck()
         {
@@ -32,7 +36,7 @@ namespace SerialPortForward
             string com2NameTemp = GetCom(cmbCom2.Text);
             if (string.IsNullOrEmpty(com1NameTemp) || string.IsNullOrEmpty(com2NameTemp))
             {
-                MessageBox.Show( "未获取到串口号,不可以打开空的串口","打开失败",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                MessageBox.Show("未获取到串口号,不可以打开空的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             if (com1NameTemp == com2NameTemp)
@@ -49,7 +53,7 @@ namespace SerialPortForward
 
         private void Com1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            DataReceived(com1Name, true, com1Forward, com1,com2);
+            DataReceived(com1Name, true, com1Forward, com1, com2);
         }
         void DataReceived(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
         {
@@ -86,23 +90,16 @@ namespace SerialPortForward
             {
                 return;
             }
+
             byte[] byteRead = result.ToArray();
-
-                //原始写法
-                //byteRead = new byte[sp.BytesToRead];
-                //if (byteRead.Length == 0)
-                //    return;
-                //sp.Read(byteRead, 0, byteRead.Length);
-
-
             string strHex = ByteToHex(byteRead);
-            AddLog(strHex, byteRead, name, left, send, spSend);
+            AddLog(strHex, byteRead, name, left, send, spSend, spReceive);
         }
 
         Regex regGetComName = new Regex("\\((COM(\\d+))\\)");
         public string GetCom(string ComName)
         {
-            Match match= regGetComName.Match(ComName);
+            Match match = regGetComName.Match(ComName);
             if (match.Success)
             {
                 return match.Groups[1].Value;
@@ -112,7 +109,7 @@ namespace SerialPortForward
 
         private void btnMoreSerialOption_Click(object sender, EventArgs e)
         {
-            if (!com1.IsOpen&&!com2.IsOpen)
+            if (!com1.IsOpen && !com2.IsOpen)
             {
                 FrmMoreSerial fms = new FrmMoreSerial(ref com1, ref com2);
                 if (fms.ShowDialog() == DialogResult.OK)
@@ -149,32 +146,32 @@ namespace SerialPortForward
         }
         void SerialOtherSave(INIFileHelper ini)
         {
-            
-            ini.IniWriteValue("Com1", "Name",com1Name);
+
+            ini.IniWriteValue("Com1", "Name", com1Name);
             ini.IniWriteValue("Com2", "Name", com2Name);
 
             ini.IniWriteValue("Com1", "Forward", com1Forward.ToString());
             ini.IniWriteValue("Com2", "Forward", com2Forward.ToString());
         }
-        
+
         void SerialOtherRead(INIFileHelper ini)
         {
-            txtName1.Text = ini.IniReadValue("Com1", "Name","" );
-            txtName2.Text = ini.IniReadValue("Com2", "Name","" );
+            txtName1.Text = ini.IniReadValue("Com1", "Name", "");
+            txtName2.Text = ini.IniReadValue("Com2", "Name", "");
 
-            chkForward1.Checked = Convert.ToBoolean(  ini.IniReadValue("Com1", "Forward", "true"));
+            chkForward1.Checked = Convert.ToBoolean(ini.IniReadValue("Com1", "Forward", "true"));
             chkForward2.Checked = Convert.ToBoolean(ini.IniReadValue("Com2", "Forward", "true"));
         }
         void ReadSerialOption()
         {
             INIFileHelper ini = new INIFileHelper(Application.StartupPath + "\\config.ini");
-            SerialRead(com1, "Com1",cmbBaudRate1, ini);
-            SerialRead(com2, "Com2",cmbBaudRate2, ini);
+            SerialRead(com1, "Com1", cmbBaudRate1, ini);
+            SerialRead(com2, "Com2", cmbBaudRate2, ini);
             SerialOtherRead(ini);
         }
-        void SerialRead(SerialPortInfo sp, string Name,ComboBox cmb, INIFileHelper ini)
+        void SerialRead(SerialPortInfo sp, string Name, ComboBox cmb, INIFileHelper ini)
         {
-            sp.PortName=ini.IniReadValue(Name, "PortName", sp.PortName.ToString());
+            sp.PortName = ini.IniReadValue(Name, "PortName", sp.PortName.ToString());
             sp.StopBits = (StopBits)Enum.Parse(typeof(StopBits), ini.IniReadValue(Name, "Stop", sp.StopBits.ToString()));
             sp.DataBits = Convert.ToInt32(ini.IniReadValue(Name, "Data", sp.DataBits.ToString()));
             sp.Parity = (Parity)Enum.Parse(typeof(Parity), ini.IniReadValue(Name, "Parity", sp.Parity.ToString()));
@@ -193,7 +190,8 @@ namespace SerialPortForward
 
         private void FrmMain_Shown(object sender, EventArgs e)
         {
-            try { 
+            try
+            {
                 ReadSerialOption();
             }
             catch (Exception ex)
@@ -237,27 +235,46 @@ namespace SerialPortForward
         {
 
         }
-        void AddLog(string hex, byte[] data,string name,bool left,bool send,SerialPort sp)
+        private void AddLog(string hex, byte[] data, string name, bool left, bool send, SerialPort spSend, SerialPort spReceive)
         {
-            Color color= Color.DarkBlue;
+            Color color = Color.DarkBlue;
             if (!left)
             {
                 color = Color.DarkGreen;
             }
-            serialLog1.AddLog(name,color,hex);
-            this.Invoke((MethodInvoker)delegate ()
+            serialLog1.AddLog(name, color, hex);
+            Invoke((MethodInvoker)delegate
             {
-
-                if (hex.Contains("0D0D0A"))
+                //!hex.Contains("0D0D0A") &&
+                if (send)
                 {
-                    //忽略转发连接的消息
-                    return;
+                    if (left && chkAnalysis.Checked && chkAutoAnswer.Checked && dicCache.ContainsKey(hex))
+                    {
+                        byte[] array = HexToByte(dicCache[hex]);
+                        spReceive.Write(array, 0, array.Length);
+                        AddLog(dicCache[hex], array, "自动应答", left: false, send: false, spSend, spReceive);
+                    }
+                    else if (spSend.IsOpen)
+                    {
+                        if (left)
+                        {
+                            lastSendHex = hex;
+                        }
+                        if (!left && chkAnalysis.Checked)
+                        {
+                            if (dicCache.ContainsKey(lastSendHex))
+                            {
+                                dicCache[lastSendHex] = hex;
+                            }
+                            else
+                            {
+                                dicCache.Add(lastSendHex, hex);
+                            }
+                            UpCacheCount();
+                        }
+                        spSend.Write(data, 0, data.Length);
+                    }
                 }
-                if (send && sp.IsOpen)
-                {
-                    sp.Write(data, 0, data.Length);
-                }
-                
             });
         }
 
@@ -368,7 +385,8 @@ namespace SerialPortForward
                             timerCom1.Interval = com1.Timer;
                             timerCom1.Enabled = true;
                         }
-                        else {
+                        else
+                        {
                             com1.DataReceived += Com1_DataReceived;
                         }
                         com1.Open();
@@ -479,16 +497,76 @@ namespace SerialPortForward
                     return;
 
                 string strHex = ByteToHex(rev);
-                AddLog(strHex, rev, name, left, send, spSend);
+                AddLog(strHex, rev, name, left, send, spSend, spReceive);
             }
             catch (Exception ex)
             {
                 return;
             }//崩了？
         }
-        void ComBaudChange(SerialPortInfo sp,ComboBox cmb)
+
+        private void chkAnalysis_CheckedChanged(object sender, EventArgs e)
         {
-            if (int.TryParse(cmb.Text,out int baud))
+            groupBox1.Enabled = chkAnalysis.Checked;
+        }
+
+        private void btnLoadCache_Click(object sender, EventArgs e)
+        {
+            import();
+        }
+        private void UpCacheCount()
+        {
+            lblDataCount.Text = dicCache.Count.ToString();
+        }
+        private void import()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "请选择缓存文件";
+            ofd.Filter = "缓存数据|*.json";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    dicCache.Clear();
+                    string jsonStr = File.ReadAllText(ofd.FileName);
+                    dicCache = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
+                    UpCacheCount();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "加载失败", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+        }
+
+        private void save()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "选择保存路径";
+            sfd.Filter = "缓存数据|*.json";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string jsonStr = JsonConvert.SerializeObject(dicCache);
+                    File.WriteAllText(sfd.FileName, jsonStr);
+                    MessageBox.Show("保存成功");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "保存失败", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            save();
+        }
+
+        void ComBaudChange(SerialPortInfo sp, ComboBox cmb)
+        {
+            if (int.TryParse(cmb.Text, out int baud))
             {
                 sp.BaudRate = baud;
             }
@@ -569,7 +647,7 @@ namespace SerialPortForward
                     {
                         cmbCom1.SelectedIndex = cmbCom1.SelectedIndex == -1 ? 0 : cmbCom1.SelectedIndex;
                         cmbCom2.SelectedIndex = cmbCom2.SelectedIndex == -1 ? 0 : cmbCom2.SelectedIndex;
-                        btnCom1.Enabled=btnCom2.Enabled = true;
+                        btnCom1.Enabled = btnCom2.Enabled = true;
                     }
                     else
                     {
@@ -581,6 +659,6 @@ namespace SerialPortForward
 
             });
         }
-      
+
     }
 }

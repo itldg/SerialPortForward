@@ -51,6 +51,15 @@
             this.serialLog1 = new ITLDG.SerialLog();
             this.timerCom1 = new System.Windows.Forms.Timer(this.components);
             this.timerCom2 = new System.Windows.Forms.Timer(this.components);
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblDataCount = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.chkAutoAnswer = new System.Windows.Forms.CheckBox();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnClearCache = new System.Windows.Forms.Button();
+            this.btnLoadCache = new System.Windows.Forms.Button();
+            this.chkAnalysis = new System.Windows.Forms.CheckBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbBaudRate2
@@ -265,7 +274,7 @@
             // 
             // serialLog1
             // 
-            this.serialLog1.Location = new System.Drawing.Point(10, 59);
+            this.serialLog1.Location = new System.Drawing.Point(10, 113);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
@@ -273,7 +282,7 @@
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
             this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
             this.serialLog1.SerialLogType = ITLDG.LogType.HEX_And_TEXT;
-            this.serialLog1.Size = new System.Drawing.Size(785, 379);
+            this.serialLog1.Size = new System.Drawing.Size(785, 325);
             this.serialLog1.TabIndex = 38;
             // 
             // timerCom1
@@ -284,11 +293,98 @@
             // 
             this.timerCom2.Tick += new System.EventHandler(this.timerCom2_Tick);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lblDataCount);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.chkAutoAnswer);
+            this.groupBox1.Controls.Add(this.btnSave);
+            this.groupBox1.Controls.Add(this.btnClearCache);
+            this.groupBox1.Controls.Add(this.btnLoadCache);
+            this.groupBox1.Enabled = false;
+            this.groupBox1.Location = new System.Drawing.Point(12, 59);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(783, 49);
+            this.groupBox1.TabIndex = 39;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "协议分析";
+            // 
+            // lblDataCount
+            // 
+            this.lblDataCount.AutoSize = true;
+            this.lblDataCount.Location = new System.Drawing.Point(443, 23);
+            this.lblDataCount.Name = "lblDataCount";
+            this.lblDataCount.Size = new System.Drawing.Size(11, 12);
+            this.lblDataCount.TabIndex = 6;
+            this.lblDataCount.Text = "0";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(370, 23);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 12);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "当前数据量：";
+            // 
+            // chkAutoAnswer
+            // 
+            this.chkAutoAnswer.AutoSize = true;
+            this.chkAutoAnswer.Checked = true;
+            this.chkAutoAnswer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAutoAnswer.Location = new System.Drawing.Point(172, 22);
+            this.chkAutoAnswer.Name = "chkAutoAnswer";
+            this.chkAutoAnswer.Size = new System.Drawing.Size(174, 16);
+            this.chkAutoAnswer.TabIndex = 4;
+            this.chkAutoAnswer.Text = "存在缓存的自动应答(串口1)";
+            this.chkAutoAnswer.UseVisualStyleBackColor = true;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(682, 18);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(95, 23);
+            this.btnSave.TabIndex = 3;
+            this.btnSave.Text = "保存分析结果";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnClearCache
+            // 
+            this.btnClearCache.Location = new System.Drawing.Point(91, 18);
+            this.btnClearCache.Name = "btnClearCache";
+            this.btnClearCache.Size = new System.Drawing.Size(75, 23);
+            this.btnClearCache.TabIndex = 2;
+            this.btnClearCache.Text = "清空缓存";
+            this.btnClearCache.UseVisualStyleBackColor = true;
+            // 
+            // btnLoadCache
+            // 
+            this.btnLoadCache.Location = new System.Drawing.Point(10, 18);
+            this.btnLoadCache.Name = "btnLoadCache";
+            this.btnLoadCache.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadCache.TabIndex = 1;
+            this.btnLoadCache.Text = "加载旧数据";
+            this.btnLoadCache.UseVisualStyleBackColor = true;
+            this.btnLoadCache.Click += new System.EventHandler(this.btnLoadCache_Click);
+            // 
+            // chkAnalysis
+            // 
+            this.chkAnalysis.AutoSize = true;
+            this.chkAnalysis.Location = new System.Drawing.Point(73, 59);
+            this.chkAnalysis.Name = "chkAnalysis";
+            this.chkAnalysis.Size = new System.Drawing.Size(15, 14);
+            this.chkAnalysis.TabIndex = 0;
+            this.chkAnalysis.UseVisualStyleBackColor = true;
+            this.chkAnalysis.CheckedChanged += new System.EventHandler(this.chkAnalysis_CheckedChanged);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 450);
+            this.Controls.Add(this.chkAnalysis);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.serialLog1);
             this.Controls.Add(this.btnCom2);
             this.Controls.Add(this.btnCom1);
@@ -313,6 +409,8 @@
             this.Text = "串口转发";
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.Shown += new System.EventHandler(this.FrmMain_Shown);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,6 +439,14 @@
         private ITLDG.SerialLog serialLog1;
         private System.Windows.Forms.Timer timerCom1;
         private System.Windows.Forms.Timer timerCom2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox chkAnalysis;
+        private System.Windows.Forms.Label lblDataCount;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox chkAutoAnswer;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnClearCache;
+        private System.Windows.Forms.Button btnLoadCache;
     }
 }
 
