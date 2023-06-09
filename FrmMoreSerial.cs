@@ -24,8 +24,8 @@ namespace SerialPortForward
             this.com1 = com1;
             this.com2 = com2;
 
-            ShowPort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS,nudCom1Timer);
-            ShowPort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS,nudCom2Timer);
+            ShowPort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS, nudCom1Timer, nudCom1TimeOut);
+            ShowPort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer, nudCom2TimeOut);
         }
         private void FrmMoreSerial_Load(object sender, EventArgs e)
         {
@@ -35,11 +35,11 @@ namespace SerialPortForward
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            SavePort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS,nudCom1Timer);
-            SavePort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer);
+            SavePort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS, nudCom1Timer, nudCom1TimeOut);
+            SavePort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer, nudCom2TimeOut);
             DialogResult = DialogResult.OK;
         }
-        void ShowPort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS,NumericUpDown nudTimer)
+        void ShowPort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer, NumericUpDown nudTimeOut)
         {
 
             switch (sp.StopBits)
@@ -93,10 +93,11 @@ namespace SerialPortForward
 
             cbDTR.Checked = sp.DtrEnable;
             cbRTS.Checked = sp.RtsEnable;
-            nudTimer.Value=sp.Timer;
+            nudTimer.Value = sp.Timer;
+            nudTimeOut.Value = sp.TimeOut;
         }
 
-        void SavePort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer)
+        void SavePort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer, NumericUpDown nudTimeOut)
         {
             switch (cmbStop.SelectedIndex)
             {
@@ -133,6 +134,7 @@ namespace SerialPortForward
             sp.DtrEnable = cbDTR.Checked;
             sp.RtsEnable = cbRTS.Checked;
             sp.Timer = (int)nudTimer.Value;
+            sp.TimeOut = (int)nudTimeOut.Value;
         }
     }
 }

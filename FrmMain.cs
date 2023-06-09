@@ -51,9 +51,8 @@ namespace SerialPortForward
         {
             DataReceived(com1Name, true, com1Forward, com1,com2);
         }
-        void DataReceived(string name, bool left, bool send, SerialPort spReceive,SerialPort spSend)
+        void DataReceived(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
         {
-            byte[] byteRead = null;
             if (!spReceive.IsOpen)
             {
                 return;
@@ -63,7 +62,7 @@ namespace SerialPortForward
             while (true)//循环读
             {
                 //蓝光串口过快,延迟不会发送
-                System.Threading.Thread.Sleep(30);
+                System.Threading.Thread.Sleep(spReceive.TimeOut);
                 if (!spReceive.IsOpen)//串口被关了，不读了
                     break;
                 try
@@ -87,7 +86,7 @@ namespace SerialPortForward
             {
                 return;
             }
-            byteRead = result.ToArray();
+            byte[] byteRead = result.ToArray();
 
                 //原始写法
                 //byteRead = new byte[sp.BytesToRead];
@@ -146,6 +145,7 @@ namespace SerialPortForward
             ini.IniWriteValue(Name, "Rts", sp.RtsEnable.ToString());
             ini.IniWriteValue(Name, "BaudRate", sp.BaudRate.ToString());
             ini.IniWriteValue(Name, "Timer", sp.Timer.ToString());
+            ini.IniWriteValue(Name, "TimeOut", sp.TimeOut.ToString());
         }
         void SerialOtherSave(INIFileHelper ini)
         {
@@ -182,6 +182,7 @@ namespace SerialPortForward
             sp.RtsEnable = Convert.ToBoolean(ini.IniReadValue(Name, "Rts", sp.RtsEnable.ToString()));
             sp.BaudRate = Convert.ToInt32(ini.IniReadValue(Name, "BaudRate", "9600"));
             sp.Timer = Convert.ToInt32(ini.IniReadValue(Name, "Timer", "0"));
+            sp.TimeOut = Convert.ToInt32(ini.IniReadValue(Name, "TimeOut", "30"));
 
             cmb.Text = sp.BaudRate.ToString();
         }

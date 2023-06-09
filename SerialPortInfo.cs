@@ -16,5 +16,10 @@ namespace SerialPortForward
         /// 轮询查询时间间隔
         /// </summary>
         public int Timer { get; set; }=0;
+
+        /// <summary>
+        /// 分包合并
+        /// </summary>
+        public int TimeOut { get; set; } = 30;
     }
 }
