@@ -48,52 +48,69 @@ namespace SerialPortForward
         }
         private void Com2_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            DataReceived(com2Name, false, com2Forward, com2, com1);
+            DataReceivedHandle(com2Name, false, com2Forward, com2, com1);
         }
 
         private void Com1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            DataReceived(com1Name, true, com1Forward, com1, com2);
+            DataReceivedHandle(com1Name, true, com1Forward, com1, com2);
         }
-        void DataReceived(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
+        void DataReceivedHandle(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
         {
-            if (!spReceive.IsOpen)
+            if (spReceive.CloseIng){return;}
+            try
             {
-                return;
-            }
-            //分包写法
-            List<byte> result = new List<byte>();
-            while (true)//循环读
-            {
-                //蓝光串口过快,延迟不会发送
-                System.Threading.Thread.Sleep(spReceive.TimeOut);
-                if (!spReceive.IsOpen)//串口被关了，不读了
-                    break;
-                try
+                spReceive.Listening = true;
+                if (spReceive.TimeOut > 0)
                 {
-                    int length = spReceive.BytesToRead;
-                    if (length == 0)//没数据，退出去
-                        break;
-                    byte[] rev = new byte[length];
-                    spReceive.Read(rev, 0, length);//读数据
-                    if (rev.Length == 0)
-                        break;
-                    result.AddRange(rev);//加到list末尾
+                    System.Threading.Thread.Sleep(spReceive.TimeOut);
                 }
-                catch (Exception ex)
+                //分包写法
+                List<byte> result = new List<byte>();
+                while (true)//循环读
                 {
-                    break;
-                }//崩了？
+                    if (spReceive.CloseIng || !spReceive.IsOpen)//串口被关了，不读了
+                    {
+                        break;
+                    }
+                    try
+                    {
+                        int length = spReceive.BytesToRead;
+                        if (length == 0)//没数据，退出去
+                            break;
+                        byte[] rev = new byte[length];
+                        spReceive.Read(rev, 0, length);//读数据
+                        if (rev.Length == 0)
+                            break;
+                        result.AddRange(rev);//加到list末尾
+                        if (result.Count > 1024)
+                        {
+                            break;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        break;
+                    }//崩了？
 
-            }
-            if (result.Count == 0)
-            {
-                return;
-            }
+                    if (spReceive.TimeOut > 0)
+                    {
+                        System.Threading.Thread.Sleep(spReceive.TimeOut);
+                    }
+                }
+                if (result.Count == 0)
+                {
+                    return;
+                }
 
-            byte[] byteRead = result.ToArray();
-            string strHex = ByteToHex(byteRead);
-            AddLog(strHex, byteRead, name, left, send, spSend, spReceive);
+                byte[] byteRead = result.ToArray();
+                string strHex = ByteToHex(byteRead);
+                AddLog(strHex, byteRead, name, left, send, spSend, spReceive);
+            }
+            finally{
+                spReceive.Listening = false;
+            }
+            
         }
 
         Regex regGetComName = new Regex("\\((COM(\\d+))\\)");
@@ -288,7 +305,6 @@ namespace SerialPortForward
         /// <exception cref="Exception"></exception>
         public static string HexToAscii(string hex)
         {
-            string strCharacter = "";
             String str = "";
             hex = hex.Replace(" ", "");
             int j = hex.Length;
@@ -297,6 +313,7 @@ namespace SerialPortForward
             {
                 int asciiCode1 = Convert.ToInt32(hex.Substring(i, 2), 16);
 
+                string strCharacter;
                 if (asciiCode1 >= 0x00 && asciiCode1 <= 0xFF)
                 {
                     ASCIIEncoding asciiEncoding = new ASCIIEncoding();
@@ -407,7 +424,6 @@ namespace SerialPortForward
                 try
                 {
                     com1.Close();
-                    com1.Dispose();
                 }
                 catch (Exception)
                 {
@@ -456,7 +472,6 @@ namespace SerialPortForward
                 try
                 {
                     com2.Close();
-                    com2.Dispose();
                 }
                 catch (Exception)
                 {
@@ -499,7 +514,7 @@ namespace SerialPortForward
                 string strHex = ByteToHex(rev);
                 AddLog(strHex, rev, name, left, send, spSend, spReceive);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return;
             }//崩了？
@@ -512,17 +527,19 @@ namespace SerialPortForward
 
         private void btnLoadCache_Click(object sender, EventArgs e)
         {
-            import();
+            Import();
         }
         private void UpCacheCount()
         {
             lblDataCount.Text = dicCache.Count.ToString();
         }
-        private void import()
+        private void Import()
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "请选择缓存文件";
-            ofd.Filter = "缓存数据|*.json";
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Title = "请选择缓存文件",
+                Filter = "缓存数据|*.json"
+            };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -539,11 +556,13 @@ namespace SerialPortForward
             }
         }
 
-        private void save()
+        private void Save()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Title = "选择保存路径";
-            sfd.Filter = "缓存数据|*.json";
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Title = "选择保存路径",
+                Filter = "缓存数据|*.json"
+            };
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -561,7 +580,7 @@ namespace SerialPortForward
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            save();
+            Save();
         }
 
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)
@@ -592,7 +611,7 @@ namespace SerialPortForward
                     {
                         ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_PnPEntity");
                         Regex regExp = new Regex("\\(COM\\d+\\)");
-                        foreach (ManagementObject queryObj in searcher.Get())
+                        foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
                         {
                             if ((queryObj["Caption"] != null) && regExp.IsMatch(queryObj["Caption"].ToString()))
                             {
