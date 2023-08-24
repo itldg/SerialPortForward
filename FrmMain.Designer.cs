@@ -274,6 +274,9 @@
             // 
             // serialLog1
             // 
+            this.serialLog1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.serialLog1.Location = new System.Drawing.Point(10, 113);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
