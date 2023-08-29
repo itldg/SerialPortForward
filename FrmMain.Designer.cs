@@ -59,6 +59,8 @@
             this.btnClearCache = new System.Windows.Forms.Button();
             this.btnLoadCache = new System.Windows.Forms.Button();
             this.chkAnalysis = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cmbPlugins = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,9 +122,9 @@
             // 
             // btnReload
             // 
-            this.btnReload.Location = new System.Drawing.Point(10, 6);
+            this.btnReload.Location = new System.Drawing.Point(10, 5);
             this.btnReload.Name = "btnReload";
-            this.btnReload.Size = new System.Drawing.Size(75, 46);
+            this.btnReload.Size = new System.Drawing.Size(75, 24);
             this.btnReload.TabIndex = 27;
             this.btnReload.Text = "重载串口";
             this.btnReload.UseVisualStyleBackColor = true;
@@ -184,9 +186,9 @@
             // 
             // btnMoreSerialOption
             // 
-            this.btnMoreSerialOption.Location = new System.Drawing.Point(91, 6);
+            this.btnMoreSerialOption.Location = new System.Drawing.Point(91, 5);
             this.btnMoreSerialOption.Name = "btnMoreSerialOption";
-            this.btnMoreSerialOption.Size = new System.Drawing.Size(80, 46);
+            this.btnMoreSerialOption.Size = new System.Drawing.Size(80, 24);
             this.btnMoreSerialOption.TabIndex = 32;
             this.btnMoreSerialOption.Text = "串口设置";
             this.btnMoreSerialOption.UseVisualStyleBackColor = true;
@@ -277,7 +279,7 @@
             this.serialLog1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.serialLog1.Location = new System.Drawing.Point(10, 113);
+            this.serialLog1.Location = new System.Drawing.Point(10, 114);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
@@ -285,7 +287,7 @@
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
             this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
             this.serialLog1.SerialLogType = ITLDG.SerialLog.LogType.HEX_And_TEXT;
-            this.serialLog1.Size = new System.Drawing.Size(785, 325);
+            this.serialLog1.Size = new System.Drawing.Size(785, 375);
             this.serialLog1.TabIndex = 38;
             // 
             // timerCom1
@@ -381,11 +383,32 @@
             this.chkAnalysis.UseVisualStyleBackColor = true;
             this.chkAnalysis.CheckedChanged += new System.EventHandler(this.chkAnalysis_CheckedChanged);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 37);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(65, 12);
+            this.label4.TabIndex = 40;
+            this.label4.Text = "消息处理：";
+            // 
+            // cmbPlugins
+            // 
+            this.cmbPlugins.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPlugins.FormattingEnabled = true;
+            this.cmbPlugins.Location = new System.Drawing.Point(73, 33);
+            this.cmbPlugins.Name = "cmbPlugins";
+            this.cmbPlugins.Size = new System.Drawing.Size(98, 20);
+            this.cmbPlugins.TabIndex = 41;
+            this.cmbPlugins.SelectedIndexChanged += new System.EventHandler(this.cmbPlugins_SelectedIndexChanged);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(809, 450);
+            this.ClientSize = new System.Drawing.Size(809, 501);
+            this.Controls.Add(this.cmbPlugins);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.chkAnalysis);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.serialLog1);
@@ -408,6 +431,7 @@
             this.Controls.Add(this.chkForward2);
             this.Controls.Add(this.chkForward1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(825, 489);
             this.Name = "FrmMain";
             this.Text = "串口转发";
             this.Load += new System.EventHandler(this.FrmMain_Load);
@@ -450,6 +474,8 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnClearCache;
         private System.Windows.Forms.Button btnLoadCache;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cmbPlugins;
     }
 }
 

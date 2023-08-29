@@ -2,20 +2,17 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
-using System.Security.Policy;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace SerialPortForward
 {
@@ -23,6 +20,9 @@ namespace SerialPortForward
     {
         private Dictionary<string, string> dicCache = new Dictionary<string, string>();
         private string lastSendHex = "";
+        string pluginDir = Application.StartupPath + "\\plugins\\";
+        List<IPlugin> listPlugins = new List<IPlugin>();
+        int pluginIndex = -1;
         public FrmMain()
         {
             InitializeComponent();
@@ -55,9 +55,17 @@ namespace SerialPortForward
         {
             DataReceivedHandle(com1Name, true, com1Forward, com1, com2);
         }
-        void DataReceivedHandle(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
+        /// <summary>
+        /// 串口收到数据
+        /// </summary>
+        /// <param name="name">串口名称</param>
+        /// <param name="isCom1">是否是串口1</param>
+        /// <param name="openForward">是否勾选了转发</param>
+        /// <param name="spReceive">收到消息的串口</param>
+        /// <param name="spSend">准备转发的串口</param>
+        void DataReceivedHandle(string name, bool isCom1, bool openForward, SerialPortInfo spReceive, SerialPortInfo spSend)
         {
-            if (spReceive.CloseIng){return;}
+            if (spReceive.CloseIng) { return; }
             try
             {
                 spReceive.Listening = true;
@@ -104,13 +112,13 @@ namespace SerialPortForward
                 }
 
                 byte[] byteRead = result.ToArray();
-                string strHex = ByteToHex(byteRead);
-                AddLog(strHex, byteRead, name, left, send, spSend, spReceive);
+                AddLog(byteRead, name, isCom1, openForward, spReceive, spSend);
             }
-            finally{
+            finally
+            {
                 spReceive.Listening = false;
             }
-            
+
         }
 
         Regex regGetComName = new Regex("\\((COM(\\d+))\\)");
@@ -204,7 +212,33 @@ namespace SerialPortForward
         {
             refreshPortList();
         }
-
+        void LoadPlugins()
+        {
+            //listPlugins
+            string[] files = Directory.GetFiles(Application.StartupPath + "\\Plugins", "*.dll");
+            foreach (string file in files)
+            {
+                try
+                {
+                    Assembly assembly = Assembly.LoadFile(file);
+                    Type[] types = assembly.GetTypes();
+                    foreach (Type type in types)
+                    {
+                        if (type.GetInterface("IPlugin") != null)
+                        {
+                            IPlugin plugin = (IPlugin)Activator.CreateInstance(type);
+                            listPlugins.Add(plugin);
+                            cmbPlugins.Items.Add(plugin.Name);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("加载插件失败：" + ex.Message);
+                }
+            }
+            if (cmbPlugins.Items.Count > 0) { cmbPlugins.SelectedIndex = 0; }
+        }
         private void FrmMain_Shown(object sender, EventArgs e)
         {
             try
@@ -216,6 +250,7 @@ namespace SerialPortForward
                 Console.WriteLine("读取配置文件失败：" + ex.Message);
             }
             refreshPortList();
+            LoadPlugins();
         }
 
         private void cmbBaudRate2_TextChanged(object sender, EventArgs e)
@@ -250,34 +285,61 @@ namespace SerialPortForward
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
-
+            if (!Directory.Exists(pluginDir))
+            {
+                Directory.CreateDirectory(pluginDir);
+            }
         }
-        private void AddLog(string hex, byte[] data, string name, bool left, bool send, SerialPort spSend, SerialPort spReceive)
+        /// <summary>
+        /// 串口添加日志并转发
+        /// </summary>
+        /// <param name="data">收到的数据</param>
+        /// <param name="name">串口名称</param>
+        /// <param name="isCom1">是否是串口1</param>
+        /// <param name="openForward">是否勾选了转发</param>
+        /// <param name="spSend">收到数据的串口</param>
+        /// <param name="spReceive">将转发到的串口</param>
+        /// <param name="isAuto">这条消息是否来自自动回复</param>
+        private void AddLog(byte[] data, string name, bool isCom1, bool openForward, SerialPort spReceive, SerialPort spSend, bool isAuto = false)
         {
+            
+            byte[] rep = null;
+            if (!isAuto&&pluginIndex >= 0)
+            {
+                rep = listPlugins[pluginIndex].GetBytes(isCom1, name, ref data);
+            }
+            string hex = ByteToHex(data);
             Color color = Color.DarkBlue;
-            if (!left)
+            if (!isCom1)
             {
                 color = Color.DarkGreen;
             }
             serialLog1.AddLog(name, color, hex);
+            if (isAuto) { return; }
+            if (rep != null && rep.Length > 0)
+            {
+                spReceive.Write(rep, 0, rep.Length);
+                AddLog(rep, "插件答复", isCom1: !isCom1, openForward: openForward, spSend, spReceive, true);
+                return;
+            }
             Invoke((MethodInvoker)delegate
             {
                 //!hex.Contains("0D0D0A") &&
-                if (send)
+                if (openForward)
                 {
-                    if (left && chkAnalysis.Checked && chkAutoAnswer.Checked && dicCache.ContainsKey(hex))
+                    if (isCom1 && chkAnalysis.Checked && chkAutoAnswer.Checked && dicCache.ContainsKey(hex))
                     {
                         byte[] array = HexToByte(dicCache[hex]);
                         spReceive.Write(array, 0, array.Length);
-                        AddLog(dicCache[hex], array, "自动应答", left: false, send: false, spSend, spReceive);
+                        AddLog(array, "自动应答", isCom1: false, openForward: false, spSend, spReceive, true);
                     }
                     else if (spSend.IsOpen)
                     {
-                        if (left)
+                        if (isCom1)
                         {
                             lastSendHex = hex;
                         }
-                        if (!left && chkAnalysis.Checked)
+                        if (!isCom1 && chkAnalysis.Checked)
                         {
                             if (dicCache.ContainsKey(lastSendHex))
                             {
@@ -495,7 +557,7 @@ namespace SerialPortForward
         {
             DataShow(com2Name, false, com2Forward, com2, com1);
         }
-        void DataShow(string name, bool left, bool send, SerialPortInfo spReceive, SerialPortInfo spSend)
+        void DataShow(string name, bool isCom1, bool openForward, SerialPortInfo spReceive, SerialPortInfo spSend)
         {
             if (!spReceive.IsOpen)
             {
@@ -511,8 +573,7 @@ namespace SerialPortForward
                 if (rev.Length == 0)
                     return;
 
-                string strHex = ByteToHex(rev);
-                AddLog(strHex, rev, name, left, send, spSend, spReceive);
+                AddLog(rev, name, isCom1, openForward, spReceive, spSend);
             }
             catch (Exception)
             {
@@ -581,6 +642,11 @@ namespace SerialPortForward
         private void btnSave_Click(object sender, EventArgs e)
         {
             Save();
+        }
+
+        private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            pluginIndex = cmbPlugins.SelectedIndex;
         }
 
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)
