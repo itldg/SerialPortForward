@@ -214,7 +214,6 @@ namespace SerialPortForward
         }
         void LoadPlugins()
         {
-            //listPlugins
             string[] files = Directory.GetFiles(Application.StartupPath + "\\Plugins", "*.dll");
             foreach (string file in files)
             {
@@ -306,7 +305,15 @@ namespace SerialPortForward
             byte[] rep = null;
             if (!isAuto&&pluginIndex >= 0)
             {
-                rep = listPlugins[pluginIndex].GetBytes(isCom1, name, ref data);
+                try
+                {
+                    rep = listPlugins[pluginIndex].GetBytes(isCom1, name, ref data);
+                }
+                catch (Exception ex)
+                {
+                    serialLog1.AddLog(listPlugins[pluginIndex].Name + " 插件处理异常", Color.DarkRed, Encoding.Default.GetBytes(ex.Message));
+                }
+                
             }
             string hex = ByteToHex(data);
             Color color = Color.DarkBlue;
@@ -400,7 +407,7 @@ namespace SerialPortForward
         public static string AsciiToHex(string asciiCode)
         {
 
-            byte[] ba = System.Text.ASCIIEncoding.Default.GetBytes(asciiCode);
+            byte[] ba = Encoding.Default.GetBytes(asciiCode);
             StringBuilder sb = new StringBuilder();
             foreach (byte b in ba)
             {
@@ -440,7 +447,6 @@ namespace SerialPortForward
                 {
                     returnStr += comByte[i].ToString("X2");
                 }
-                // returnStr = returnStr.Replace(" ", "");
             }
             return returnStr;
         }
