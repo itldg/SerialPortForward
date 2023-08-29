@@ -288,6 +288,7 @@ namespace SerialPortForward
             {
                 Directory.CreateDirectory(pluginDir);
             }
+            Text+= " V" + Application.ProductVersion;
         }
         /// <summary>
         /// 串口添加日志并转发
@@ -653,6 +654,12 @@ namespace SerialPortForward
         private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
             pluginIndex = cmbPlugins.SelectedIndex;
+        }
+
+        private void btnClearCache_Click(object sender, EventArgs e)
+        {
+            dicCache.Clear();
+            UpCacheCount();
         }
 
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)

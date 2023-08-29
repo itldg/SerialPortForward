@@ -362,6 +362,7 @@
             this.btnClearCache.TabIndex = 2;
             this.btnClearCache.Text = "清空缓存";
             this.btnClearCache.UseVisualStyleBackColor = true;
+            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
             // 
             // btnLoadCache
             // 
