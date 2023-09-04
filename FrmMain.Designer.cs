@@ -52,7 +52,6 @@
             this.timerCom1 = new System.Windows.Forms.Timer(this.components);
             this.timerCom2 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lblDataCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.chkAutoAnswer = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
@@ -66,6 +65,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnSend = new System.Windows.Forms.Button();
             this.txtSendHex = new SerialPortForward.HexTextBox();
+            this.lblDataCount = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -319,15 +319,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "协议分析";
             // 
-            // lblDataCount
-            // 
-            this.lblDataCount.AutoSize = true;
-            this.lblDataCount.Location = new System.Drawing.Point(443, 23);
-            this.lblDataCount.Name = "lblDataCount";
-            this.lblDataCount.Size = new System.Drawing.Size(11, 12);
-            this.lblDataCount.TabIndex = 6;
-            this.lblDataCount.Text = "0";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -456,6 +447,17 @@
             this.txtSendHex.Size = new System.Drawing.Size(509, 21);
             this.txtSendHex.TabIndex = 43;
             // 
+            // lblDataCount
+            // 
+            this.lblDataCount.AutoSize = true;
+            this.lblDataCount.Location = new System.Drawing.Point(443, 23);
+            this.lblDataCount.Name = "lblDataCount";
+            this.lblDataCount.Size = new System.Drawing.Size(11, 12);
+            this.lblDataCount.TabIndex = 6;
+            this.lblDataCount.TabStop = true;
+            this.lblDataCount.Text = "0";
+            this.lblDataCount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblDataCount_LinkClicked);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -528,7 +530,6 @@
         private System.Windows.Forms.Timer timerCom2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox chkAnalysis;
-        private System.Windows.Forms.Label lblDataCount;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkAutoAnswer;
         private System.Windows.Forms.Button btnSave;
@@ -541,6 +542,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnSend;
         private HexTextBox txtSendHex;
+        private System.Windows.Forms.LinkLabel lblDataCount;
     }
 }
 

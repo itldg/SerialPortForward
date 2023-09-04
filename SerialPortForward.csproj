@@ -61,6 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="FrmDatas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDatas.Designer.cs">
+      <DependentUpon>FrmDatas.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +78,12 @@
     </Compile>
     <Compile Include="FrmMoreSerial.Designer.cs">
       <DependentUpon>FrmMoreSerial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexAutoAnswer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexAutoAnswer.Designer.cs">
+      <DependentUpon>HexAutoAnswer.cs</DependentUpon>
     </Compile>
     <Compile Include="HexTextBox.cs">
       <SubType>Component</SubType>
@@ -86,11 +98,17 @@
     <Compile Include="SerialPortInfo.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="FrmDatas.resx">
+      <DependentUpon>FrmDatas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMoreSerial.resx">
       <DependentUpon>FrmMoreSerial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexAutoAnswer.resx">
+      <DependentUpon>HexAutoAnswer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

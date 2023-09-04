@@ -724,7 +724,22 @@ namespace SerialPortForward
             }
             byte[] bytes = HexToByte(txtSendHex.Text);
             sp.Write(bytes, 0, bytes.Length);
-            serialLog1.AddLog("调试串口-"+cmbSendTo.Text, Color.OrangeRed, txtSendHex.Text);
+            serialLog1.AddLog("调试串口-" + cmbSendTo.Text, Color.OrangeRed, txtSendHex.Text);
+        }
+
+        private void lblDataCount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            chkAnalysis.Checked = false;
+            FrmDatas frmDatas = new FrmDatas(dicCache);
+            frmDatas.SaveDatasEvent += FrmDatas_SaveDatasEvent;
+            frmDatas.ShowDialog();
+            UpCacheCount();
+            chkAnalysis.Checked = true;
+        }
+
+        private void FrmDatas_SaveDatasEvent(Dictionary<string, string> dic)
+        {
+            dicCache = dic;
         }
 
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)
