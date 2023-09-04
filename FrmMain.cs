@@ -20,6 +20,7 @@ namespace SerialPortForward
     {
         private Dictionary<string, string> dicCache = new Dictionary<string, string>();
         private string lastSendHex = "";
+        string iniFile = Application.StartupPath + "\\config.ini";
         string pluginDir = Application.StartupPath + "\\plugins\\";
         List<IPlugin> listPlugins = new List<IPlugin>();
         int pluginIndex = -1;
@@ -148,11 +149,28 @@ namespace SerialPortForward
                 MessageBox.Show("请先停止串口转发再进行操作", "请先停止", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
-
+        void SaveOption()
+        {
+            INIFileHelper ini = new INIFileHelper(iniFile);
+            ini.IniWriteValue("Option", "Plugin", cmbPlugins.Text);
+        }
+        void ReadOption()
+        {
+            INIFileHelper ini = new INIFileHelper(iniFile);
+            string plugin = ini.IniReadValue("Option", "Plugin", "");
+            for (int i = 0; i < cmbPlugins.Items.Count; i++)
+            {
+                if (cmbPlugins.Items[i].ToString() == plugin)
+                {
+                    cmbPlugins.SelectedIndex = i;
+                    break;
+                }
+            }
+            if (cmbPlugins.SelectedIndex < 0 && cmbPlugins.Items.Count > 0) { cmbPlugins.SelectedIndex = 0; }
+        }
         void SaveSerialOption()
         {
-            INIFileHelper ini = new INIFileHelper(Application.StartupPath + "\\config.ini");
+            INIFileHelper ini = new INIFileHelper(iniFile);
             SerialSave(com1, "Com1", ini);
             SerialSave(com2, "Com2", ini);
             SerialOtherSave(ini);
@@ -189,7 +207,7 @@ namespace SerialPortForward
         }
         void ReadSerialOption()
         {
-            INIFileHelper ini = new INIFileHelper(Application.StartupPath + "\\config.ini");
+            INIFileHelper ini = new INIFileHelper(iniFile);
             SerialRead(com1, "Com1", cmbBaudRate1, ini);
             SerialRead(com2, "Com2", cmbBaudRate2, ini);
             SerialOtherRead(ini);
@@ -236,7 +254,6 @@ namespace SerialPortForward
                     Console.WriteLine("加载插件失败：" + ex.Message);
                 }
             }
-            if (cmbPlugins.Items.Count > 0) { cmbPlugins.SelectedIndex = 0; }
         }
         private void FrmMain_Shown(object sender, EventArgs e)
         {
@@ -250,6 +267,7 @@ namespace SerialPortForward
             }
             refreshPortList();
             LoadPlugins();
+            ReadOption();
         }
 
         private void cmbBaudRate2_TextChanged(object sender, EventArgs e)
@@ -288,7 +306,7 @@ namespace SerialPortForward
             {
                 Directory.CreateDirectory(pluginDir);
             }
-            Text+= " V" + Application.ProductVersion;
+            Text += " V" + Application.ProductVersion;
         }
         /// <summary>
         /// 串口添加日志并转发
@@ -302,9 +320,9 @@ namespace SerialPortForward
         /// <param name="isAuto">这条消息是否来自自动回复</param>
         private void AddLog(byte[] data, string name, bool isCom1, bool openForward, SerialPort spReceive, SerialPort spSend, bool isAuto = false)
         {
-            
+
             byte[] rep = null;
-            if (!isAuto&&pluginIndex >= 0)
+            if (!isAuto && pluginIndex >= 0)
             {
                 try
                 {
@@ -314,7 +332,7 @@ namespace SerialPortForward
                 {
                     serialLog1.AddLog(listPlugins[pluginIndex].Name + " 插件处理异常", Color.DarkRed, Encoding.Default.GetBytes(ex.Message));
                 }
-                
+
             }
             string hex = ByteToHex(data);
             Color color = Color.DarkBlue;
@@ -654,6 +672,9 @@ namespace SerialPortForward
         private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
             pluginIndex = cmbPlugins.SelectedIndex;
+            SaveOption();
+
+
         }
 
         private void btnClearCache_Click(object sender, EventArgs e)
