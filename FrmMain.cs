@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace SerialPortForward
 {
@@ -153,11 +154,15 @@ namespace SerialPortForward
         {
             INIFileHelper ini = new INIFileHelper(iniFile);
             ini.IniWriteValue("Option", "Plugin", cmbPlugins.Text);
+            ini.IniWriteValue("Option", "SendTo", cmbSendTo.SelectedIndex.ToString());
+            ini.IniReadValue("Option", "SendHex", txtSendHex.Text);
         }
         void ReadOption()
         {
             INIFileHelper ini = new INIFileHelper(iniFile);
             string plugin = ini.IniReadValue("Option", "Plugin", "");
+            cmbSendTo.SelectedIndex = Convert.ToInt32(ini.IniReadValue("Option", "SendTo", "0"));
+            txtSendHex.Text = ini.IniReadValue(plugin, "SendHex", "");
             for (int i = 0; i < cmbPlugins.Items.Count; i++)
             {
                 if (cmbPlugins.Items[i].ToString() == plugin)
@@ -260,6 +265,8 @@ namespace SerialPortForward
             try
             {
                 ReadSerialOption();
+                cmbSendTo.Items[0] = com1Name;
+                cmbSendTo.Items[1] = com2Name;
             }
             catch (Exception ex)
             {
@@ -293,11 +300,13 @@ namespace SerialPortForward
         private void txtName1_TextChanged(object sender, EventArgs e)
         {
             com1Name = txtName1.Text;
+            cmbSendTo.Items[0] = com1Name;
         }
 
         private void txtName2_TextChanged(object sender, EventArgs e)
         {
             com2Name = txtName2.Text;
+            cmbSendTo.Items[1] = com2Name;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -518,6 +527,7 @@ namespace SerialPortForward
                 cmbCom1.Enabled = true;
                 btnCom1.Text = "打开";
             }
+            CheckSendEnable();
         }
 
         private void btnCom2_Click(object sender, EventArgs e)
@@ -566,6 +576,21 @@ namespace SerialPortForward
                 cmbCom2.Enabled = true;
                 btnCom2.Text = "打开";
             }
+            CheckSendEnable();
+        }
+
+        void CheckSendEnable()
+        {
+            bool enable = false;
+            if (cmbSendTo.SelectedIndex == 0 && com1.IsOpen)
+            {
+                enable = true;
+            }
+            else if (cmbSendTo.SelectedIndex == 1 && com2.IsOpen)
+            {
+                enable = true;
+            }
+            btnSend.Enabled = enable;
         }
 
         private void serialLog1_Load(object sender, EventArgs e)
@@ -672,15 +697,34 @@ namespace SerialPortForward
         private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
             pluginIndex = cmbPlugins.SelectedIndex;
-            SaveOption();
-
-
+            CheckSendEnable();
         }
 
         private void btnClearCache_Click(object sender, EventArgs e)
         {
             dicCache.Clear();
             UpCacheCount();
+        }
+
+        private void FrmMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SaveOption();
+        }
+
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            if (!txtSendHex.IsHex())
+            {
+                return;
+            }
+            SerialPortInfo sp = com1;
+            if (cmbSendTo.SelectedIndex == 1)
+            {
+                sp = com2;
+            }
+            byte[] bytes = HexToByte(txtSendHex.Text);
+            sp.Write(bytes, 0, bytes.Length);
+            serialLog1.AddLog("调试串口-"+cmbSendTo.Text, Color.OrangeRed, txtSendHex.Text);
         }
 
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)

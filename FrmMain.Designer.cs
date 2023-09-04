@@ -61,6 +61,11 @@
             this.chkAnalysis = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbPlugins = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cmbSendTo = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.btnSend = new System.Windows.Forms.Button();
+            this.txtSendHex = new SerialPortForward.HexTextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -279,7 +284,7 @@
             this.serialLog1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.serialLog1.Location = new System.Drawing.Point(10, 114);
+            this.serialLog1.Location = new System.Drawing.Point(10, 145);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
@@ -287,7 +292,7 @@
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
             this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
             this.serialLog1.SerialLogType = ITLDG.SerialLog.LogType.HEX_And_TEXT;
-            this.serialLog1.Size = new System.Drawing.Size(785, 375);
+            this.serialLog1.Size = new System.Drawing.Size(785, 344);
             this.serialLog1.TabIndex = 38;
             // 
             // timerCom1
@@ -307,7 +312,7 @@
             this.groupBox1.Controls.Add(this.btnClearCache);
             this.groupBox1.Controls.Add(this.btnLoadCache);
             this.groupBox1.Enabled = false;
-            this.groupBox1.Location = new System.Drawing.Point(12, 59);
+            this.groupBox1.Location = new System.Drawing.Point(12, 88);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(783, 49);
             this.groupBox1.TabIndex = 39;
@@ -377,7 +382,7 @@
             // chkAnalysis
             // 
             this.chkAnalysis.AutoSize = true;
-            this.chkAnalysis.Location = new System.Drawing.Point(73, 59);
+            this.chkAnalysis.Location = new System.Drawing.Point(73, 88);
             this.chkAnalysis.Name = "chkAnalysis";
             this.chkAnalysis.Size = new System.Drawing.Size(15, 14);
             this.chkAnalysis.TabIndex = 0;
@@ -403,16 +408,69 @@
             this.cmbPlugins.TabIndex = 41;
             this.cmbPlugins.SelectedIndexChanged += new System.EventHandler(this.cmbPlugins_SelectedIndexChanged);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 66);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(65, 12);
+            this.label5.TabIndex = 40;
+            this.label5.Text = "串口调试：";
+            // 
+            // cmbSendTo
+            // 
+            this.cmbSendTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSendTo.FormattingEnabled = true;
+            this.cmbSendTo.Items.AddRange(new object[] {
+            "串口1",
+            "串口2"});
+            this.cmbSendTo.Location = new System.Drawing.Point(73, 62);
+            this.cmbSendTo.Name = "cmbSendTo";
+            this.cmbSendTo.Size = new System.Drawing.Size(98, 20);
+            this.cmbSendTo.TabIndex = 41;
+            this.cmbSendTo.SelectedIndexChanged += new System.EventHandler(this.cmbPlugins_SelectedIndexChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(183, 66);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(47, 12);
+            this.label8.TabIndex = 42;
+            this.label8.Text = "内 容：";
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(739, 61);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(56, 23);
+            this.btnSend.TabIndex = 37;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            // 
+            // txtSendHex
+            // 
+            this.txtSendHex.Location = new System.Drawing.Point(224, 62);
+            this.txtSendHex.Name = "txtSendHex";
+            this.txtSendHex.Size = new System.Drawing.Size(509, 21);
+            this.txtSendHex.TabIndex = 43;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 501);
+            this.Controls.Add(this.txtSendHex);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.cmbSendTo);
             this.Controls.Add(this.cmbPlugins);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.chkAnalysis);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.serialLog1);
+            this.Controls.Add(this.btnSend);
             this.Controls.Add(this.btnCom2);
             this.Controls.Add(this.btnCom1);
             this.Controls.Add(this.txtName2);
@@ -435,6 +493,7 @@
             this.MinimumSize = new System.Drawing.Size(825, 489);
             this.Name = "FrmMain";
             this.Text = "串口转发";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.Shown += new System.EventHandler(this.FrmMain_Shown);
             this.groupBox1.ResumeLayout(false);
@@ -477,6 +536,11 @@
         private System.Windows.Forms.Button btnLoadCache;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbPlugins;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cmbSendTo;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnSend;
+        private HexTextBox txtSendHex;
     }
 }
 

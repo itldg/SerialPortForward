@@ -73,6 +73,12 @@
     <Compile Include="FrmMoreSerial.Designer.cs">
       <DependentUpon>FrmMoreSerial.cs</DependentUpon>
     </Compile>
+    <Compile Include="HexTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HexTextBox.Designer.cs">
+      <DependentUpon>HexTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="IniFileHelper.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Program.cs" />
