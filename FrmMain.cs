@@ -49,11 +49,6 @@ namespace SerialPortForward
                 MessageBox.Show("未获取到串口号,不可以打开空的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-            if (com1NameTemp == com2NameTemp)
-            {
-                MessageBox.Show("不可转发两个相同的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
             return true;
         }
         private void Com2_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -530,7 +525,13 @@ namespace SerialPortForward
 
                 if (SerialCheck())
                 {
+
                     string com1NameTemp = GetCom(cmbCom1.Text);
+                    if (com2.IsOpen && cmbCom1.Text == cmbCom2.Text)
+                    {
+                        MessageBox.Show("不可转发两个相同的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
                     try
                     {
                         com1.PortName = com1NameTemp;
@@ -579,6 +580,11 @@ namespace SerialPortForward
 
                 if (SerialCheck())
                 {
+                    if (com1.IsOpen && cmbCom1.Text == cmbCom2.Text)
+                    {
+                        MessageBox.Show("不可转发两个相同的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
                     string com2NameTemp = GetCom(cmbCom2.Text);
                     try
                     {
