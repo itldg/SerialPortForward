@@ -1,8 +1,10 @@
 ﻿using DotNet.Utilities;
+using ITLDG.DataCheck;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
@@ -24,12 +26,18 @@ namespace SerialPortForward
         string iniFile = Application.StartupPath + "\\config.ini";
         string pluginDir = Application.StartupPath + "\\plugins\\";
         List<IPlugin> listPlugins = new List<IPlugin>();
+        List<Plugin> listCheckPlugins = new List<Plugin>();
+        string CheckToolPath = "";
+        int tipIndex = -1;
+        string[] tips = new string[] { "本软件主要作用是转发两个串口的数据,搭配虚拟串口更好用", "校验位如果不是增加在末尾,请在HEX中填写一个错误的校验占位", "定时发送时间设置不要过小,否则可能会引起卡顿" };
         int pluginIndex = -1;
         public FrmMain()
         {
             InitializeComponent();
         }
-        SerialPortInfo com1 = new SerialPortInfo(), com2 = new SerialPortInfo();
+        SerialPortInfo com1 = new SerialPortInfo(), com2 = new SerialPortInfo(), timerCom;
+        byte[] timerSendBytes = new byte[0];
+        string timerSendToName = "";
         string com1Name = "", com2Name = "";
         bool com1Forward = true, com2Forward = true;
         bool SerialCheck()
@@ -155,14 +163,20 @@ namespace SerialPortForward
             INIFileHelper ini = new INIFileHelper(iniFile);
             ini.IniWriteValue("Option", "Plugin", cmbPlugins.Text);
             ini.IniWriteValue("Option", "SendTo", cmbSendTo.SelectedIndex.ToString());
-            ini.IniReadValue("Option", "SendHex", txtSendHex.Text);
+            ini.IniWriteValue("Option", "SendHex", txtSendHex.Text);
+            ini.IniWriteValue("Option", "Timer", nudSend.Value.ToString());
+            ini.IniWriteValue("Option", "CheckPlugin", cmbCheck.Text.ToString());
+            ini.IniWriteValue("Option", "CheckStart", nudCheckStart.Value.ToString());
+            ini.IniWriteValue("Option", "CheckEnd", nudCheckEnd.Value.ToString());
+            ini.IniWriteValue("Option", "CheckToolPath", CheckToolPath);
+
         }
         void ReadOption()
         {
             INIFileHelper ini = new INIFileHelper(iniFile);
             string plugin = ini.IniReadValue("Option", "Plugin", "");
             cmbSendTo.SelectedIndex = Convert.ToInt32(ini.IniReadValue("Option", "SendTo", "0"));
-            txtSendHex.Text = ini.IniReadValue(plugin, "SendHex", "");
+            txtSendHex.Text = ini.IniReadValue("Option", "SendHex", "");
             for (int i = 0; i < cmbPlugins.Items.Count; i++)
             {
                 if (cmbPlugins.Items[i].ToString() == plugin)
@@ -172,6 +186,21 @@ namespace SerialPortForward
                 }
             }
             if (cmbPlugins.SelectedIndex < 0 && cmbPlugins.Items.Count > 0) { cmbPlugins.SelectedIndex = 0; }
+
+            CheckToolPath = ini.IniReadValue("Option", "CheckToolPath", "");
+            nudSend.Value = Convert.ToInt32(ini.IniReadValue("Option", "Timer", "1000"));
+            nudCheckStart.Value = Convert.ToInt32(ini.IniReadValue("Option", "CheckStart", "1"));
+            nudCheckEnd.Value = Convert.ToInt32(ini.IniReadValue("Option", "CheckEnd", "0"));
+            string checkPlugin = ini.IniReadValue("Option", "CheckPlugin", "None");
+            for (int i = 1; i < cmbCheck.Items.Count; i++)
+            {
+                if (cmbCheck.Items[i].ToString() == checkPlugin)
+                {
+                    cmbCheck.SelectedIndex = i;
+                    break;
+                }
+            }
+
         }
         void SaveSerialOption()
         {
@@ -274,7 +303,20 @@ namespace SerialPortForward
             }
             refreshPortList();
             LoadPlugins();
+            InitCheckPlugins();
             ReadOption();
+            NextTip();
+        }
+
+        void InitCheckPlugins()
+        {
+
+            listCheckPlugins = Plugin.GePlugins();
+            listCheckPlugins = listCheckPlugins.OrderBy(x => x.Name).ToList();
+            cmbCheck.Items.Clear();
+            cmbCheck.Items.Add("None");
+            cmbCheck.Items.AddRange(listCheckPlugins.ToArray());
+            cmbCheck.SelectedIndex = 0;
         }
 
         private void cmbBaudRate2_TextChanged(object sender, EventArgs e)
@@ -591,6 +633,12 @@ namespace SerialPortForward
                 enable = true;
             }
             btnSend.Enabled = enable;
+            if (!enable)
+            {
+                timerSend.Enabled = false;
+                chkTimer.Checked = false;
+            }
+            chkTimer.Enabled = enable;
         }
 
         private void serialLog1_Load(object sender, EventArgs e)
@@ -697,7 +745,6 @@ namespace SerialPortForward
         private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
             pluginIndex = cmbPlugins.SelectedIndex;
-            CheckSendEnable();
         }
 
         private void btnClearCache_Click(object sender, EventArgs e)
@@ -717,16 +764,49 @@ namespace SerialPortForward
             {
                 return;
             }
+            timerSendToName = cmbSendTo.Text;
             SerialPortInfo sp = com1;
             if (cmbSendTo.SelectedIndex == 1)
             {
                 sp = com2;
             }
-            byte[] bytes = HexToByte(txtSendHex.Text);
-            sp.Write(bytes, 0, bytes.Length);
-            serialLog1.AddLog("调试串口-" + cmbSendTo.Text, Color.OrangeRed, txtSendHex.Text);
+            byte[] bytes = GetSendBytes();
+            DebugSend(sp, bytes);
         }
+        byte[] GetSendBytes()
+        {
+            byte[] bytes = HexToByte(txtSendHex.Text);
+            if (cmbCheck.SelectedIndex <= 0)
+            {
+                return bytes;
+            }
+            int start = (int)nudCheckStart.Value;
+            int end = (int)nudCheckEnd.Value;
+            if (start < 0 || end < 0 || start > bytes.Length || end >= bytes.Length)
+            {
+                return bytes;
+            }
+            int bytesLength = (bytes.Length - end) - start + 1;
+            byte[] bytesCheck = new byte[bytesLength];
+            Array.Copy(bytes, start - 1, bytesCheck, 0, bytesLength);
 
+            int checkIndex = cmbCheck.SelectedIndex - 1;
+            byte[] bytesCheckResult = listCheckPlugins[checkIndex].CheckData(bytesCheck);
+            List<byte> listBytes = new List<byte>();
+            listBytes.AddRange(bytes);
+            if (end == 0)
+            {
+                listBytes.AddRange(bytesCheckResult);
+            }
+            else
+            {
+                end = bytes.Length - end;
+                listBytes.RemoveRange(end, bytesCheckResult.Length);
+                listBytes.InsertRange(end, bytesCheckResult);
+            }
+
+            return listBytes.ToArray();
+        }
         private void lblDataCount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             chkAnalysis.Checked = false;
@@ -742,6 +822,101 @@ namespace SerialPortForward
             dicCache = dic;
         }
 
+        private void chkTimer_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (chkTimer.Checked && (txtSendHex.Text == "" || !txtSendHex.IsHex()))
+            {
+                MessageBox.Show("请先输入正确的HEX字符串", "发送消息错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                chkTimer.Checked = false;
+                return;
+            }
+
+            if (chkTimer.Checked)
+            {
+                timerSendBytes = GetSendBytes();
+                timerSend.Interval = (int)nudSend.Value;
+                timerSendToName = cmbSendTo.Text;
+            }
+            txtSendHex.Enabled = cmbCheck.Enabled = nudCheckStart.Enabled = nudCheckEnd.Enabled = cmbSendTo.Enabled = !chkTimer.Checked;
+            timerSend.Enabled = chkTimer.Checked;
+        }
+
+        private void cmbSendTo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            timerCom = com1;
+            if (cmbSendTo.SelectedIndex == 1)
+            {
+                timerCom = com2;
+            }
+            CheckSendEnable();
+        }
+
+        private void nudSend_ValueChanged(object sender, EventArgs e)
+        {
+            timerSend.Interval = (int)nudSend.Value;
+        }
+
+        private void timerSend_Tick(object sender, EventArgs e)
+        {
+            DebugSend(timerCom, timerSendBytes);
+        }
+
+        private void tsslTip_MouseHover(object sender, EventArgs e)
+        {
+            timerTip.Enabled = false;
+        }
+
+        private void tsslTip_MouseLeave(object sender, EventArgs e)
+        {
+            timerTip.Enabled = true;
+        }
+
+        private void timerTip_Tick(object sender, EventArgs e)
+        {
+            NextTip();
+        }
+        void NextTip()
+        {
+            tipIndex++;
+            if (tipIndex >= tips.Length)
+            {
+                tipIndex = 0;
+            }
+            tsslTip.Text = tips[tipIndex];
+        }
+
+        private void btnCheckTool_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(CheckToolPath) && File.Exists("CheckTool.exe"))
+            {
+                Process.Start("CheckTool.exe");
+                return;
+            }
+            if (File.Exists(CheckToolPath))
+            {
+                Process.Start(CheckToolPath);
+                return;
+            }
+            if (MessageBox.Show("工具路径未配置或不存在,是否立即配置?", "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                return;
+            }
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "exe文件|*.exe";
+            openFileDialog.Title = "选择校验工具";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                CheckToolPath = openFileDialog.FileName;
+                Process.Start(CheckToolPath);
+            }
+        }
+
+        void DebugSend(SerialPortInfo sp, byte[] bytes)
+        {
+            sp.Write(bytes, 0, bytes.Length);
+            serialLog1.AddLog("串口调试-" + timerSendToName, Color.OrangeRed, bytes);
+        }
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)
         {
             if (int.TryParse(cmb.Text, out int baud))

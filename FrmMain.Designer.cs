@@ -52,6 +52,7 @@
             this.timerCom1 = new System.Windows.Forms.Timer(this.components);
             this.timerCom2 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblDataCount = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.chkAutoAnswer = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
@@ -64,9 +65,28 @@
             this.cmbSendTo = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.btnSend = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cmbCheck = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.nudCheckStart = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.nudCheckEnd = new System.Windows.Forms.NumericUpDown();
+            this.label14 = new System.Windows.Forms.Label();
+            this.btnCheckTool = new System.Windows.Forms.Button();
+            this.chkTimer = new System.Windows.Forms.CheckBox();
+            this.nudSend = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
+            this.timerSend = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslTip = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timerTip = new System.Windows.Forms.Timer(this.components);
             this.txtSendHex = new SerialPortForward.HexTextBox();
-            this.lblDataCount = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCheckStart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCheckEnd)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSend)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbBaudRate2
@@ -284,7 +304,7 @@
             this.serialLog1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.serialLog1.Location = new System.Drawing.Point(10, 145);
+            this.serialLog1.Location = new System.Drawing.Point(10, 175);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
@@ -292,7 +312,7 @@
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
             this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
             this.serialLog1.SerialLogType = ITLDG.SerialLog.LogType.HEX_And_TEXT;
-            this.serialLog1.Size = new System.Drawing.Size(785, 344);
+            this.serialLog1.Size = new System.Drawing.Size(785, 301);
             this.serialLog1.TabIndex = 38;
             // 
             // timerCom1
@@ -312,12 +332,23 @@
             this.groupBox1.Controls.Add(this.btnClearCache);
             this.groupBox1.Controls.Add(this.btnLoadCache);
             this.groupBox1.Enabled = false;
-            this.groupBox1.Location = new System.Drawing.Point(12, 88);
+            this.groupBox1.Location = new System.Drawing.Point(12, 120);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(783, 49);
             this.groupBox1.TabIndex = 39;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "协议分析";
+            // 
+            // lblDataCount
+            // 
+            this.lblDataCount.AutoSize = true;
+            this.lblDataCount.Location = new System.Drawing.Point(443, 23);
+            this.lblDataCount.Name = "lblDataCount";
+            this.lblDataCount.Size = new System.Drawing.Size(11, 12);
+            this.lblDataCount.TabIndex = 6;
+            this.lblDataCount.TabStop = true;
+            this.lblDataCount.Text = "0";
+            this.lblDataCount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblDataCount_LinkClicked);
             // 
             // label3
             // 
@@ -373,7 +404,7 @@
             // chkAnalysis
             // 
             this.chkAnalysis.AutoSize = true;
-            this.chkAnalysis.Location = new System.Drawing.Point(73, 88);
+            this.chkAnalysis.Location = new System.Drawing.Point(73, 121);
             this.chkAnalysis.Name = "chkAnalysis";
             this.chkAnalysis.Size = new System.Drawing.Size(15, 14);
             this.chkAnalysis.TabIndex = 0;
@@ -419,7 +450,7 @@
             this.cmbSendTo.Name = "cmbSendTo";
             this.cmbSendTo.Size = new System.Drawing.Size(98, 20);
             this.cmbSendTo.TabIndex = 41;
-            this.cmbSendTo.SelectedIndexChanged += new System.EventHandler(this.cmbPlugins_SelectedIndexChanged);
+            this.cmbSendTo.SelectedIndexChanged += new System.EventHandler(this.cmbSendTo_SelectedIndexChanged);
             // 
             // label8
             // 
@@ -440,6 +471,168 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(183, 93);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(47, 12);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "校 验：";
+            // 
+            // cmbCheck
+            // 
+            this.cmbCheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCheck.FormattingEnabled = true;
+            this.cmbCheck.Location = new System.Drawing.Point(224, 89);
+            this.cmbCheck.Name = "cmbCheck";
+            this.cmbCheck.Size = new System.Drawing.Size(197, 20);
+            this.cmbCheck.TabIndex = 23;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(427, 93);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(41, 12);
+            this.label12.TabIndex = 44;
+            this.label12.Text = "校验第";
+            // 
+            // nudCheckStart
+            // 
+            this.nudCheckStart.Location = new System.Drawing.Point(469, 89);
+            this.nudCheckStart.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudCheckStart.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudCheckStart.Name = "nudCheckStart";
+            this.nudCheckStart.Size = new System.Drawing.Size(52, 21);
+            this.nudCheckStart.TabIndex = 45;
+            this.nudCheckStart.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(526, 93);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(113, 12);
+            this.label13.TabIndex = 46;
+            this.label13.Text = "个字节至末尾倒数第";
+            // 
+            // nudCheckEnd
+            // 
+            this.nudCheckEnd.Location = new System.Drawing.Point(640, 89);
+            this.nudCheckEnd.Name = "nudCheckEnd";
+            this.nudCheckEnd.Size = new System.Drawing.Size(52, 21);
+            this.nudCheckEnd.TabIndex = 45;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(695, 93);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(41, 12);
+            this.label14.TabIndex = 47;
+            this.label14.Text = "个字节";
+            // 
+            // btnCheckTool
+            // 
+            this.btnCheckTool.Location = new System.Drawing.Point(739, 89);
+            this.btnCheckTool.Name = "btnCheckTool";
+            this.btnCheckTool.Size = new System.Drawing.Size(56, 23);
+            this.btnCheckTool.TabIndex = 48;
+            this.btnCheckTool.Text = "工具";
+            this.btnCheckTool.UseVisualStyleBackColor = true;
+            this.btnCheckTool.Click += new System.EventHandler(this.btnCheckTool_Click);
+            // 
+            // chkTimer
+            // 
+            this.chkTimer.AutoSize = true;
+            this.chkTimer.Location = new System.Drawing.Point(15, 91);
+            this.chkTimer.Name = "chkTimer";
+            this.chkTimer.Size = new System.Drawing.Size(60, 16);
+            this.chkTimer.TabIndex = 49;
+            this.chkTimer.Text = "定时发";
+            this.chkTimer.UseVisualStyleBackColor = true;
+            this.chkTimer.CheckedChanged += new System.EventHandler(this.chkTimer_CheckedChanged);
+            // 
+            // nudSend
+            // 
+            this.nudSend.Location = new System.Drawing.Point(74, 89);
+            this.nudSend.Maximum = new decimal(new int[] {
+            -159383553,
+            46653770,
+            5421,
+            0});
+            this.nudSend.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudSend.Name = "nudSend";
+            this.nudSend.Size = new System.Drawing.Size(62, 21);
+            this.nudSend.TabIndex = 50;
+            this.nudSend.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudSend.ValueChanged += new System.EventHandler(this.nudSend_ValueChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(136, 93);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(35, 12);
+            this.label15.TabIndex = 51;
+            this.label15.Text = "ms/次";
+            // 
+            // timerSend
+            // 
+            this.timerSend.Tick += new System.EventHandler(this.timerSend_Tick);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.tsslTip});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 479);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(809, 22);
+            this.statusStrip1.TabIndex = 52;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(56, 17);
+            this.toolStripStatusLabel1.Text = "小提示：";
+            // 
+            // tsslTip
+            // 
+            this.tsslTip.Name = "tsslTip";
+            this.tsslTip.Size = new System.Drawing.Size(80, 17);
+            this.tsslTip.Text = "欢迎您的使用";
+            this.tsslTip.MouseLeave += new System.EventHandler(this.tsslTip_MouseLeave);
+            this.tsslTip.MouseHover += new System.EventHandler(this.tsslTip_MouseHover);
+            // 
+            // timerTip
+            // 
+            this.timerTip.Enabled = true;
+            this.timerTip.Interval = 5000;
+            this.timerTip.Tick += new System.EventHandler(this.timerTip_Tick);
+            // 
             // txtSendHex
             // 
             this.txtSendHex.Location = new System.Drawing.Point(224, 62);
@@ -447,22 +640,21 @@
             this.txtSendHex.Size = new System.Drawing.Size(509, 21);
             this.txtSendHex.TabIndex = 43;
             // 
-            // lblDataCount
-            // 
-            this.lblDataCount.AutoSize = true;
-            this.lblDataCount.Location = new System.Drawing.Point(443, 23);
-            this.lblDataCount.Name = "lblDataCount";
-            this.lblDataCount.Size = new System.Drawing.Size(11, 12);
-            this.lblDataCount.TabIndex = 6;
-            this.lblDataCount.TabStop = true;
-            this.lblDataCount.Text = "0";
-            this.lblDataCount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblDataCount_LinkClicked);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 501);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.nudSend);
+            this.Controls.Add(this.chkTimer);
+            this.Controls.Add(this.btnCheckTool);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.nudCheckEnd);
+            this.Controls.Add(this.nudCheckStart);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.txtSendHex);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.cmbSendTo);
@@ -485,7 +677,9 @@
             this.Controls.Add(this.btnReload);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.cmbCheck);
             this.Controls.Add(this.cmbCom2);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.cmbCom1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -500,6 +694,11 @@
             this.Shown += new System.EventHandler(this.FrmMain_Shown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCheckStart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCheckEnd)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSend)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -543,6 +742,22 @@
         private System.Windows.Forms.Button btnSend;
         private HexTextBox txtSendHex;
         private System.Windows.Forms.LinkLabel lblDataCount;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cmbCheck;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown nudCheckStart;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown nudCheckEnd;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnCheckTool;
+        private System.Windows.Forms.CheckBox chkTimer;
+        private System.Windows.Forms.NumericUpDown nudSend;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Timer timerSend;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel tsslTip;
+        private System.Windows.Forms.Timer timerTip;
     }
 }
 
