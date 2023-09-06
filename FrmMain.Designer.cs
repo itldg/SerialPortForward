@@ -59,7 +59,6 @@
             this.btnClearCache = new System.Windows.Forms.Button();
             this.btnLoadCache = new System.Windows.Forms.Button();
             this.chkRecordData = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.cmbPlugins = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.cmbSendTo = new System.Windows.Forms.ComboBox();
@@ -82,6 +81,8 @@
             this.tsslTip = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerTip = new System.Windows.Forms.Timer(this.components);
             this.txtSendHex = new SerialPortForward.HexTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnPluginOption = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCheckStart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCheckEnd)).BeginInit();
@@ -147,11 +148,11 @@
             // 
             // btnReload
             // 
-            this.btnReload.Location = new System.Drawing.Point(10, 5);
+            this.btnReload.Location = new System.Drawing.Point(10, 3);
             this.btnReload.Name = "btnReload";
-            this.btnReload.Size = new System.Drawing.Size(75, 24);
+            this.btnReload.Size = new System.Drawing.Size(79, 24);
             this.btnReload.TabIndex = 27;
-            this.btnReload.Text = "重载串口";
+            this.btnReload.Text = "刷新串口";
             this.btnReload.UseVisualStyleBackColor = true;
             this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
             // 
@@ -211,9 +212,9 @@
             // 
             // btnMoreSerialOption
             // 
-            this.btnMoreSerialOption.Location = new System.Drawing.Point(91, 5);
+            this.btnMoreSerialOption.Location = new System.Drawing.Point(92, 3);
             this.btnMoreSerialOption.Name = "btnMoreSerialOption";
-            this.btnMoreSerialOption.Size = new System.Drawing.Size(80, 24);
+            this.btnMoreSerialOption.Size = new System.Drawing.Size(79, 24);
             this.btnMoreSerialOption.TabIndex = 32;
             this.btnMoreSerialOption.Text = "串口设置";
             this.btnMoreSerialOption.UseVisualStyleBackColor = true;
@@ -413,22 +414,13 @@
             this.chkRecordData.UseVisualStyleBackColor = true;
             this.chkRecordData.CheckedChanged += new System.EventHandler(this.chkRecordData_CheckedChanged);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 37);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(65, 12);
-            this.label4.TabIndex = 40;
-            this.label4.Text = "消息处理：";
-            // 
             // cmbPlugins
             // 
             this.cmbPlugins.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPlugins.FormattingEnabled = true;
-            this.cmbPlugins.Location = new System.Drawing.Point(73, 33);
+            this.cmbPlugins.Location = new System.Drawing.Point(47, 33);
             this.cmbPlugins.Name = "cmbPlugins";
-            this.cmbPlugins.Size = new System.Drawing.Size(98, 20);
+            this.cmbPlugins.Size = new System.Drawing.Size(90, 20);
             this.cmbPlugins.TabIndex = 41;
             this.cmbPlugins.SelectedIndexChanged += new System.EventHandler(this.cmbPlugins_SelectedIndexChanged);
             // 
@@ -645,11 +637,31 @@
             this.txtSendHex.Size = new System.Drawing.Size(509, 21);
             this.txtSendHex.TabIndex = 43;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 37);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(41, 12);
+            this.label4.TabIndex = 40;
+            this.label4.Text = "插件：";
+            // 
+            // btnPluginOption
+            // 
+            this.btnPluginOption.Location = new System.Drawing.Point(143, 32);
+            this.btnPluginOption.Name = "btnPluginOption";
+            this.btnPluginOption.Size = new System.Drawing.Size(28, 23);
+            this.btnPluginOption.TabIndex = 53;
+            this.btnPluginOption.Text = "⚙";
+            this.btnPluginOption.UseVisualStyleBackColor = true;
+            this.btnPluginOption.Click += new System.EventHandler(this.btnPluginOption_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 501);
+            this.Controls.Add(this.btnPluginOption);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.nudSend);
@@ -738,7 +750,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnClearCache;
         private System.Windows.Forms.Button btnLoadCache;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbPlugins;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cmbSendTo;
@@ -762,6 +773,8 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel tsslTip;
         private System.Windows.Forms.Timer timerTip;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnPluginOption;
     }
 }
 

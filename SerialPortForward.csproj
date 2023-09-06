@@ -96,6 +96,8 @@
     </Compile>
     <Compile Include="IniFileHelper.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="PluginCommon.cs" />
+    <Compile Include="SerialPlugin.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerialPortInfo.cs">

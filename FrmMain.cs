@@ -48,6 +48,7 @@ namespace SerialPortForward
         string timerSendToName = "";
         string com1Name = "", com2Name = "";
         bool com1Forward = true, com2Forward = true;
+        PluginCommon pluginCommon;
         bool SerialCheck()
         {
             string com1NameTemp = GetCom(cmbCom1.Text);
@@ -281,6 +282,7 @@ namespace SerialPortForward
         }
         void LoadPlugins()
         {
+            pluginCommon = new PluginCommon(com1, com2, PluginWrite);
             string[] files = Directory.GetFiles(Application.StartupPath + "\\Plugins", "*.dll");
             foreach (string file in files)
             {
@@ -373,6 +375,30 @@ namespace SerialPortForward
                 Directory.CreateDirectory(pluginDir);
             }
             Text += " V" + Application.ProductVersion;
+        }
+        void PluginWrite(IPlugin plugin, bool isCom1, byte[] bytes)
+        {
+            string hex = ByteToHex(bytes);
+            Color color = Color.DarkGreen; 
+            if (!isCom1)
+            {
+                color = Color.DarkBlue;
+            }
+            serialLog1.AddLog(plugin.Name, color, hex);
+
+            SerialPortInfo sp = com1;
+            if (!isCom1)
+            {
+                sp = com2;
+            }
+            if (sp == null || !sp.IsOpen)
+            {
+                return;
+            }
+            sp.Write(bytes, 0, bytes.Length);
+            
+            
+
         }
         /// <summary>
         /// 串口添加日志并转发
@@ -768,7 +794,21 @@ namespace SerialPortForward
 
         private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (pluginIndex>=0)
+            {
+                try
+                {
+                    listPlugins[pluginIndex].UnCheck();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "插件错误", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                
+            }
             pluginIndex = cmbPlugins.SelectedIndex;
+            btnPluginOption.Enabled = listPlugins[pluginIndex].HasOption;
+            listPlugins[pluginIndex].Checked(pluginCommon);
         }
 
         private void btnClearCache_Click(object sender, EventArgs e)
@@ -947,6 +987,11 @@ namespace SerialPortForward
             AutoAnswer = chkAutoAnswer.Checked;
         }
 
+        private void btnPluginOption_Click(object sender, EventArgs e)
+        {
+            listPlugins[pluginIndex].Option();
+        }
+
         void DebugSend(SerialPortInfo sp, byte[] bytes)
         {
             if (sp == null || !sp.IsOpen)
@@ -1055,6 +1100,9 @@ namespace SerialPortForward
 
             });
         }
+
+
+
 
     }
 }
