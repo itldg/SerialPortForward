@@ -175,6 +175,10 @@ namespace SerialPortForward
             ini.IniWriteValue("Option", "RecordData", RecordData.ToString());
             ini.IniWriteValue("Option", "AutoAnswer", AutoAnswer.ToString());
 
+            ini.IniWriteValue("Log", "Enable", serialLog1.LogEnable.ToString());
+            ini.IniWriteValue("Log", "AutoScroll", serialLog1.LogAutoScroll.ToString());
+            ini.IniWriteValue("Log", "LogType", ((int)serialLog1.SerialLogType).ToString());
+
         }
         void ReadOption()
         {
@@ -208,6 +212,10 @@ namespace SerialPortForward
 
             chkRecordData.Checked = ini.IniReadValue("Option", "RecordData", "False") == "True";
             chkAutoAnswer.Checked = ini.IniReadValue("Option", "AutoAnswer", "False") == "True";
+
+            serialLog1.LogEnable = ini.IniReadValue("Log", "Enable", "True") == "True";
+            serialLog1.LogAutoScroll = ini.IniReadValue("Log", "AutoScroll", "True") == "True";
+            serialLog1.SerialLogType = (ITLDG.SerialLog.LogType)Convert.ToInt32(ini.IniReadValue("Log", "LogType", "0"));
         }
         void SaveSerialOption()
         {
