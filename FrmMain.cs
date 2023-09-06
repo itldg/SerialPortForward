@@ -31,6 +31,14 @@ namespace SerialPortForward
         int tipIndex = -1;
         string[] tips = new string[] { "本软件主要作用是转发两个串口的数据,搭配虚拟串口更好用", "校验位如果不是增加在末尾,请在HEX中填写一个错误的校验占位", "定时发送时间设置不要过小,否则可能会引起卡顿" };
         int pluginIndex = -1;
+        /// <summary>
+        /// 记录数据
+        /// </summary>
+        bool RecordData = false;
+        /// <summary>
+        /// 自动应答
+        /// </summary>
+        bool AutoAnswer = false;
         public FrmMain()
         {
             InitializeComponent();
@@ -164,6 +172,8 @@ namespace SerialPortForward
             ini.IniWriteValue("Option", "CheckStart", nudCheckStart.Value.ToString());
             ini.IniWriteValue("Option", "CheckEnd", nudCheckEnd.Value.ToString());
             ini.IniWriteValue("Option", "CheckToolPath", CheckToolPath);
+            ini.IniWriteValue("Option", "RecordData", RecordData.ToString());
+            ini.IniWriteValue("Option", "AutoAnswer", AutoAnswer.ToString());
 
         }
         void ReadOption()
@@ -196,6 +206,8 @@ namespace SerialPortForward
                 }
             }
 
+            chkRecordData.Checked = ini.IniReadValue("Option", "RecordData", "False") == "True";
+            chkAutoAnswer.Checked = ini.IniReadValue("Option", "AutoAnswer", "False") == "True";
         }
         void SaveSerialOption()
         {
@@ -361,8 +373,8 @@ namespace SerialPortForward
         /// <param name="name">串口名称</param>
         /// <param name="isCom1">是否是串口1</param>
         /// <param name="openForward">是否勾选了转发</param>
-        /// <param name="spSend">收到数据的串口</param>
-        /// <param name="spReceive">将转发到的串口</param>
+        /// <param name="spReceive">收到数据的串口</param>
+        /// <param name="spSend">将转发到的串口</param>
         /// <param name="isAuto">这条消息是否来自自动回复</param>
         private void AddLog(byte[] data, string name, bool isCom1, bool openForward, SerialPort spReceive, SerialPort spSend, bool isAuto = false)
         {
@@ -394,39 +406,41 @@ namespace SerialPortForward
                 AddLog(rep, "插件答复", isCom1: !isCom1, openForward: openForward, spSend, spReceive, true);
                 return;
             }
-            Invoke((MethodInvoker)delegate
+            if (isCom1 && AutoAnswer && dicCache.ContainsKey(hex))
             {
-                //!hex.Contains("0D0D0A") &&
-                if (openForward)
+                byte[] array = HexToByte(dicCache[hex]);
+                spReceive.Write(array, 0, array.Length);
+                AddLog(array, "自动应答-" + com2Name, isCom1: false, openForward: false, spSend, spReceive, true);
+                return;
+            }
+
+            //!hex.Contains("0D0D0A") &&
+
+
+            if (isCom1)
+            {
+                lastSendHex = hex;
+            }
+            else if (RecordData && !string.IsNullOrEmpty(lastSendHex))
+            {
+                if (dicCache.ContainsKey(lastSendHex))
                 {
-                    if (isCom1 && chkAnalysis.Checked && chkAutoAnswer.Checked && dicCache.ContainsKey(hex))
-                    {
-                        byte[] array = HexToByte(dicCache[hex]);
-                        spReceive.Write(array, 0, array.Length);
-                        AddLog(array, "自动应答", isCom1: false, openForward: false, spSend, spReceive, true);
-                    }
-                    else if (spSend.IsOpen)
-                    {
-                        if (isCom1)
-                        {
-                            lastSendHex = hex;
-                        }
-                        if (!isCom1 && chkAnalysis.Checked)
-                        {
-                            if (dicCache.ContainsKey(lastSendHex))
-                            {
-                                dicCache[lastSendHex] = hex;
-                            }
-                            else
-                            {
-                                dicCache.Add(lastSendHex, hex);
-                            }
-                            UpCacheCount();
-                        }
-                        spSend.Write(data, 0, data.Length);
-                    }
+                    dicCache[lastSendHex] = hex;
                 }
-            });
+                else
+                {
+                    dicCache.Add(lastSendHex, hex);
+                }
+                Invoke((MethodInvoker)delegate
+                {
+                    UpCacheCount();
+
+                });
+            }
+            if (openForward && spSend.IsOpen)
+            {
+                spSend.Write(data, 0, data.Length);
+            }
         }
 
 
@@ -685,10 +699,6 @@ namespace SerialPortForward
             }//崩了？
         }
 
-        private void chkAnalysis_CheckedChanged(object sender, EventArgs e)
-        {
-            groupBox1.Enabled = chkAnalysis.Checked;
-        }
 
         private void btnLoadCache_Click(object sender, EventArgs e)
         {
@@ -815,12 +825,13 @@ namespace SerialPortForward
         }
         private void lblDataCount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            chkAnalysis.Checked = false;
+            bool temp = RecordData;
+            RecordData = false;
             FrmDatas frmDatas = new FrmDatas(dicCache);
             frmDatas.SaveDatasEvent += FrmDatas_SaveDatasEvent;
             frmDatas.ShowDialog();
             UpCacheCount();
-            chkAnalysis.Checked = true;
+            RecordData = temp;
         }
 
         private void FrmDatas_SaveDatasEvent(Dictionary<string, string> dic)
@@ -918,8 +929,26 @@ namespace SerialPortForward
             }
         }
 
+        private void chkRecordData_CheckedChanged(object sender, EventArgs e)
+        {
+            RecordData = chkRecordData.Checked;
+        }
+
+        private void chkAutoAnswer_CheckedChanged(object sender, EventArgs e)
+        {
+            AutoAnswer = chkAutoAnswer.Checked;
+        }
+
         void DebugSend(SerialPortInfo sp, byte[] bytes)
         {
+            if (sp == null || !sp.IsOpen)
+            {
+                return;
+            }
+            if (sp == com2)
+            {
+                lastSendHex = ByteToHex(bytes);
+            }
             sp.Write(bytes, 0, bytes.Length);
             serialLog1.AddLog("串口调试-" + timerSendToName, Color.OrangeRed, bytes);
         }

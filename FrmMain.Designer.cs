@@ -58,7 +58,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnClearCache = new System.Windows.Forms.Button();
             this.btnLoadCache = new System.Windows.Forms.Button();
-            this.chkAnalysis = new System.Windows.Forms.CheckBox();
+            this.chkRecordData = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbPlugins = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -304,7 +304,7 @@
             this.serialLog1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.serialLog1.Location = new System.Drawing.Point(10, 175);
+            this.serialLog1.Location = new System.Drawing.Point(10, 167);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
@@ -312,7 +312,7 @@
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
             this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
             this.serialLog1.SerialLogType = ITLDG.SerialLog.LogType.HEX_And_TEXT;
-            this.serialLog1.Size = new System.Drawing.Size(785, 301);
+            this.serialLog1.Size = new System.Drawing.Size(785, 309);
             this.serialLog1.TabIndex = 38;
             // 
             // timerCom1
@@ -325,24 +325,25 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.lblDataCount);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.chkAutoAnswer);
             this.groupBox1.Controls.Add(this.btnSave);
             this.groupBox1.Controls.Add(this.btnClearCache);
             this.groupBox1.Controls.Add(this.btnLoadCache);
-            this.groupBox1.Enabled = false;
-            this.groupBox1.Location = new System.Drawing.Point(12, 120);
+            this.groupBox1.Controls.Add(this.chkRecordData);
+            this.groupBox1.Location = new System.Drawing.Point(12, 112);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(783, 49);
             this.groupBox1.TabIndex = 39;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "协议分析";
             // 
             // lblDataCount
             // 
             this.lblDataCount.AutoSize = true;
-            this.lblDataCount.Location = new System.Drawing.Point(443, 23);
+            this.lblDataCount.Location = new System.Drawing.Point(466, 23);
             this.lblDataCount.Name = "lblDataCount";
             this.lblDataCount.Size = new System.Drawing.Size(11, 12);
             this.lblDataCount.TabIndex = 6;
@@ -353,7 +354,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(370, 23);
+            this.label3.Location = new System.Drawing.Point(393, 23);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 12);
             this.label3.TabIndex = 5;
@@ -362,22 +363,22 @@
             // chkAutoAnswer
             // 
             this.chkAutoAnswer.AutoSize = true;
-            this.chkAutoAnswer.Checked = true;
-            this.chkAutoAnswer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAutoAnswer.Location = new System.Drawing.Point(172, 22);
+            this.chkAutoAnswer.Location = new System.Drawing.Point(283, 21);
             this.chkAutoAnswer.Name = "chkAutoAnswer";
-            this.chkAutoAnswer.Size = new System.Drawing.Size(174, 16);
+            this.chkAutoAnswer.Size = new System.Drawing.Size(102, 16);
             this.chkAutoAnswer.TabIndex = 4;
-            this.chkAutoAnswer.Text = "存在缓存的自动应答(串口1)";
+            this.chkAutoAnswer.Text = "串口1自动应答";
             this.chkAutoAnswer.UseVisualStyleBackColor = true;
+            this.chkAutoAnswer.CheckedChanged += new System.EventHandler(this.chkAutoAnswer_CheckedChanged);
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(682, 18);
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSave.Location = new System.Drawing.Point(702, 17);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(95, 23);
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 3;
-            this.btnSave.Text = "保存分析结果";
+            this.btnSave.Text = "保存数据";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -387,7 +388,7 @@
             this.btnClearCache.Name = "btnClearCache";
             this.btnClearCache.Size = new System.Drawing.Size(75, 23);
             this.btnClearCache.TabIndex = 2;
-            this.btnClearCache.Text = "清空缓存";
+            this.btnClearCache.Text = "清空数据";
             this.btnClearCache.UseVisualStyleBackColor = true;
             this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
             // 
@@ -397,19 +398,20 @@
             this.btnLoadCache.Name = "btnLoadCache";
             this.btnLoadCache.Size = new System.Drawing.Size(75, 23);
             this.btnLoadCache.TabIndex = 1;
-            this.btnLoadCache.Text = "加载旧数据";
+            this.btnLoadCache.Text = "加载数据";
             this.btnLoadCache.UseVisualStyleBackColor = true;
             this.btnLoadCache.Click += new System.EventHandler(this.btnLoadCache_Click);
             // 
-            // chkAnalysis
+            // chkRecordData
             // 
-            this.chkAnalysis.AutoSize = true;
-            this.chkAnalysis.Location = new System.Drawing.Point(73, 121);
-            this.chkAnalysis.Name = "chkAnalysis";
-            this.chkAnalysis.Size = new System.Drawing.Size(15, 14);
-            this.chkAnalysis.TabIndex = 0;
-            this.chkAnalysis.UseVisualStyleBackColor = true;
-            this.chkAnalysis.CheckedChanged += new System.EventHandler(this.chkAnalysis_CheckedChanged);
+            this.chkRecordData.AutoSize = true;
+            this.chkRecordData.Location = new System.Drawing.Point(173, 21);
+            this.chkRecordData.Name = "chkRecordData";
+            this.chkRecordData.Size = new System.Drawing.Size(102, 16);
+            this.chkRecordData.TabIndex = 0;
+            this.chkRecordData.Text = "串口2记录数据";
+            this.chkRecordData.UseVisualStyleBackColor = true;
+            this.chkRecordData.CheckedChanged += new System.EventHandler(this.chkRecordData_CheckedChanged);
             // 
             // label4
             // 
@@ -433,7 +435,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 66);
+            this.label5.Location = new System.Drawing.Point(13, 93);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(65, 12);
             this.label5.TabIndex = 40;
@@ -446,7 +448,7 @@
             this.cmbSendTo.Items.AddRange(new object[] {
             "串口1",
             "串口2"});
-            this.cmbSendTo.Location = new System.Drawing.Point(73, 62);
+            this.cmbSendTo.Location = new System.Drawing.Point(73, 89);
             this.cmbSendTo.Name = "cmbSendTo";
             this.cmbSendTo.Size = new System.Drawing.Size(98, 20);
             this.cmbSendTo.TabIndex = 41;
@@ -455,7 +457,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(183, 66);
+            this.label8.Location = new System.Drawing.Point(183, 93);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 12);
             this.label8.TabIndex = 42;
@@ -463,7 +465,8 @@
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(739, 61);
+            this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSend.Location = new System.Drawing.Point(739, 88);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(56, 23);
             this.btnSend.TabIndex = 37;
@@ -474,7 +477,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(183, 93);
+            this.label9.Location = new System.Drawing.Point(183, 64);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(47, 12);
             this.label9.TabIndex = 21;
@@ -484,7 +487,7 @@
             // 
             this.cmbCheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCheck.FormattingEnabled = true;
-            this.cmbCheck.Location = new System.Drawing.Point(224, 89);
+            this.cmbCheck.Location = new System.Drawing.Point(224, 60);
             this.cmbCheck.Name = "cmbCheck";
             this.cmbCheck.Size = new System.Drawing.Size(197, 20);
             this.cmbCheck.TabIndex = 23;
@@ -492,7 +495,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(427, 93);
+            this.label12.Location = new System.Drawing.Point(427, 64);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(41, 12);
             this.label12.TabIndex = 44;
@@ -500,7 +503,7 @@
             // 
             // nudCheckStart
             // 
-            this.nudCheckStart.Location = new System.Drawing.Point(469, 89);
+            this.nudCheckStart.Location = new System.Drawing.Point(469, 60);
             this.nudCheckStart.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -523,7 +526,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(526, 93);
+            this.label13.Location = new System.Drawing.Point(526, 64);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(113, 12);
             this.label13.TabIndex = 46;
@@ -531,7 +534,7 @@
             // 
             // nudCheckEnd
             // 
-            this.nudCheckEnd.Location = new System.Drawing.Point(640, 89);
+            this.nudCheckEnd.Location = new System.Drawing.Point(640, 60);
             this.nudCheckEnd.Name = "nudCheckEnd";
             this.nudCheckEnd.Size = new System.Drawing.Size(52, 21);
             this.nudCheckEnd.TabIndex = 45;
@@ -539,7 +542,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(695, 93);
+            this.label14.Location = new System.Drawing.Point(695, 64);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(41, 12);
             this.label14.TabIndex = 47;
@@ -547,7 +550,7 @@
             // 
             // btnCheckTool
             // 
-            this.btnCheckTool.Location = new System.Drawing.Point(739, 89);
+            this.btnCheckTool.Location = new System.Drawing.Point(739, 60);
             this.btnCheckTool.Name = "btnCheckTool";
             this.btnCheckTool.Size = new System.Drawing.Size(56, 23);
             this.btnCheckTool.TabIndex = 48;
@@ -558,7 +561,7 @@
             // chkTimer
             // 
             this.chkTimer.AutoSize = true;
-            this.chkTimer.Location = new System.Drawing.Point(15, 91);
+            this.chkTimer.Location = new System.Drawing.Point(15, 62);
             this.chkTimer.Name = "chkTimer";
             this.chkTimer.Size = new System.Drawing.Size(60, 16);
             this.chkTimer.TabIndex = 49;
@@ -568,7 +571,7 @@
             // 
             // nudSend
             // 
-            this.nudSend.Location = new System.Drawing.Point(74, 89);
+            this.nudSend.Location = new System.Drawing.Point(74, 60);
             this.nudSend.Maximum = new decimal(new int[] {
             -159383553,
             46653770,
@@ -592,7 +595,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(136, 93);
+            this.label15.Location = new System.Drawing.Point(136, 64);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(35, 12);
             this.label15.TabIndex = 51;
@@ -635,7 +638,9 @@
             // 
             // txtSendHex
             // 
-            this.txtSendHex.Location = new System.Drawing.Point(224, 62);
+            this.txtSendHex.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSendHex.Location = new System.Drawing.Point(224, 89);
             this.txtSendHex.Name = "txtSendHex";
             this.txtSendHex.Size = new System.Drawing.Size(509, 21);
             this.txtSendHex.TabIndex = 43;
@@ -661,8 +666,6 @@
             this.Controls.Add(this.cmbPlugins);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.chkAnalysis);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.serialLog1);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.btnCom2);
@@ -685,6 +688,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.chkForward2);
             this.Controls.Add(this.chkForward1);
+            this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(825, 489);
             this.Name = "FrmMain";
@@ -728,7 +732,7 @@
         private System.Windows.Forms.Timer timerCom1;
         private System.Windows.Forms.Timer timerCom2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox chkAnalysis;
+        private System.Windows.Forms.CheckBox chkRecordData;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkAutoAnswer;
         private System.Windows.Forms.Button btnSave;
