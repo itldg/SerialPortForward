@@ -43,9 +43,10 @@
     <Reference Include="ITLDG.DataCheck, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ITLDG.DataCheck.1.0.1\lib\netstandard2.0\ITLDG.DataCheck.dll</HintPath>
     </Reference>
-    <Reference Include="ITLDG.SerialLog, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ITLDG.SerialLog.1.0.9\lib\net48\ITLDG.SerialLog.dll</HintPath>
+    <Reference Include="ITLDG.SerialLog, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ITLDG.SerialLog.1.0.10\lib\net48\ITLDG.SerialLog.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -63,7 +64,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common.cs" />
+    <Compile Include="BitStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BitStatus.Designer.cs">
+      <DependentUpon>BitStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmBitAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBitAnalysis.Designer.cs">
+      <DependentUpon>FrmBitAnalysis.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmDatas.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +115,12 @@
     <Compile Include="SerialPortInfo.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="BitStatus.resx">
+      <DependentUpon>BitStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmBitAnalysis.resx">
+      <DependentUpon>FrmBitAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmDatas.resx">
       <DependentUpon>FrmDatas.cs</DependentUpon>
     </EmbeddedResource>

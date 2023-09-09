@@ -83,6 +83,7 @@
             this.txtSendHex = new SerialPortForward.HexTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnPluginOption = new System.Windows.Forms.Button();
+            this.btnBit = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCheckStart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCheckEnd)).BeginInit();
@@ -337,7 +338,7 @@
             this.groupBox1.Controls.Add(this.chkRecordData);
             this.groupBox1.Location = new System.Drawing.Point(12, 112);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(783, 49);
+            this.groupBox1.Size = new System.Drawing.Size(721, 49);
             this.groupBox1.TabIndex = 39;
             this.groupBox1.TabStop = false;
             // 
@@ -375,7 +376,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(702, 17);
+            this.btnSave.Location = new System.Drawing.Point(640, 18);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 3;
@@ -656,6 +657,17 @@
             this.btnPluginOption.UseVisualStyleBackColor = true;
             this.btnPluginOption.Click += new System.EventHandler(this.btnPluginOption_Click);
             // 
+            // btnBit
+            // 
+            this.btnBit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBit.Location = new System.Drawing.Point(739, 129);
+            this.btnBit.Name = "btnBit";
+            this.btnBit.Size = new System.Drawing.Size(56, 23);
+            this.btnBit.TabIndex = 37;
+            this.btnBit.Text = "位分析";
+            this.btnBit.UseVisualStyleBackColor = true;
+            this.btnBit.Click += new System.EventHandler(this.btnBit_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -679,6 +691,7 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.serialLog1);
+            this.Controls.Add(this.btnBit);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.btnCom2);
             this.Controls.Add(this.btnCom1);
@@ -775,6 +788,7 @@
         private System.Windows.Forms.Timer timerTip;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnPluginOption;
+        private System.Windows.Forms.Button btnBit;
     }
 }
 

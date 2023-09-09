@@ -1,6 +1,8 @@
 ﻿using DotNet.Utilities;
+using ITLDG;
 using ITLDG.DataCheck;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -378,13 +380,14 @@ namespace SerialPortForward
         }
         void PluginWrite(IPlugin plugin, bool isCom1, byte[] bytes)
         {
-            string hex = ByteToHex(bytes);
-            Color color = Color.DarkGreen; 
+            string hex = bytes.GetString_HEX("");
+            Color color = Color.DarkGreen;
             if (!isCom1)
             {
                 color = Color.DarkBlue;
             }
             serialLog1.AddLog(plugin.Name, color, hex);
+            BitAnalysis(bytes);
 
             SerialPortInfo sp = com1;
             if (!isCom1)
@@ -396,8 +399,8 @@ namespace SerialPortForward
                 return;
             }
             sp.Write(bytes, 0, bytes.Length);
-            
-            
+
+
 
         }
         /// <summary>
@@ -426,24 +429,27 @@ namespace SerialPortForward
                 }
 
             }
-            string hex = ByteToHex(data);
+            string hex = data.GetString_HEX("");
             Color color = Color.DarkBlue;
             if (!isCom1)
             {
                 color = Color.DarkGreen;
             }
             serialLog1.AddLog(name, color, hex);
+            BitAnalysis(data);
             if (isAuto) { return; }
             if (rep != null && rep.Length > 0)
             {
+                BitAnalysis(rep);
                 spReceive.Write(rep, 0, rep.Length);
                 AddLog(rep, "插件答复", isCom1: !isCom1, openForward: openForward, spSend, spReceive, true);
                 return;
             }
             if (isCom1 && AutoAnswer && dicCache.ContainsKey(hex))
             {
-                byte[] array = HexToByte(dicCache[hex]);
+                byte[] array = dicCache[hex].GetBytes_HEX();
                 spReceive.Write(array, 0, array.Length);
+                BitAnalysis(array);
                 AddLog(array, "自动应答-" + com2Name, isCom1: false, openForward: false, spSend, spReceive, true);
                 return;
             }
@@ -477,94 +483,13 @@ namespace SerialPortForward
             }
         }
 
-
-        /// <summary>
-        /// Hex转换成Ascii
-        /// 将ASC码转换成字符串，如："414243"转换为"ABC"
-        /// </summary>
-        /// <param name="hex"></param>
-        /// <returns>Ascii信息</returns>
-        /// <exception cref="Exception"></exception>
-        public static string HexToAscii(string hex)
+        void BitAnalysis(byte[] bytes)
         {
-            String str = "";
-            hex = hex.Replace(" ", "");
-            int j = hex.Length;
-
-            for (int i = 0; i < j - 1; i += 2)
+            if (frm != null && !frm.IsDisposed)
             {
-                int asciiCode1 = Convert.ToInt32(hex.Substring(i, 2), 16);
-
-                string strCharacter;
-                if (asciiCode1 >= 0x00 && asciiCode1 <= 0xFF)
-                {
-                    ASCIIEncoding asciiEncoding = new ASCIIEncoding();
-                    byte[] byteArray = new byte[] { (byte)asciiCode1 };
-                    strCharacter = asciiEncoding.GetString(byteArray);
-
-                }
-                else
-                {
-                    throw new Exception("ASCII Code is not valid.");
-                }
-                str += strCharacter;
+                frm.NewData(bytes);
             }
-            return str;
         }
-        /// <summary>
-        /// Ascii转Hex
-        /// 将字符串转换成ASC码，如："ABC"转换为"414243"
-        /// </summary>
-        /// <param name="asciiCode">Ascii代码</param>
-        /// <returns>返回的hex信息</returns>
-        public static string AsciiToHex(string asciiCode)
-        {
-
-            byte[] ba = Encoding.Default.GetBytes(asciiCode);
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in ba)
-            {
-                sb.Append(b.ToString("X2"));
-            }
-            return sb.ToString();
-
-        }
-
-        /// <summary>
-        /// 转换十六进制字符串到字节数组："41 42 43"--{0x41,0x42,0x43}
-        /// </summary>
-        /// <param name="msg">待转换字符串</param>
-        /// <returns>字节数组</returns>
-        public static byte[] HexToByte(string msg)
-        {
-            msg = msg.Replace(" ", "");//移除空格
-            byte[] comBuffer = new byte[msg.Length / 2];
-            for (int i = 0; i < msg.Length; i += 2)
-            {
-                comBuffer[i / 2] = (byte)Convert.ToByte(msg.Substring(i, 2), 16);
-            }
-            return comBuffer;
-        }
-
-        /// <summary>
-        /// 转换字节数组到十六进制字符串:{0x41,0x42,0x43}--"414243"
-        /// </summary>
-        /// <param name="comByte">待转换字节数组</param>
-        /// <returns>十六进制字符串</returns>
-        public static string ByteToHex(byte[] comByte)
-        {
-            string returnStr = "";
-            if (comByte != null)
-            {
-                for (int i = 0; i < comByte.Length; i++)
-                {
-                    returnStr += comByte[i].ToString("X2");
-                }
-            }
-            return returnStr;
-        }
-
-
 
         private void btnCom1_Click(object sender, EventArgs e)
         {
@@ -794,7 +719,7 @@ namespace SerialPortForward
 
         private void cmbPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (pluginIndex>=0)
+            if (pluginIndex >= 0)
             {
                 try
                 {
@@ -804,7 +729,7 @@ namespace SerialPortForward
                 {
                     MessageBox.Show(ex.Message, "插件错误", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-                
+
             }
             pluginIndex = cmbPlugins.SelectedIndex;
             btnPluginOption.Enabled = listPlugins[pluginIndex].HasOption;
@@ -839,7 +764,7 @@ namespace SerialPortForward
         }
         byte[] GetSendBytes()
         {
-            byte[] bytes = HexToByte(txtSendHex.Text);
+            byte[] bytes = txtSendHex.Text.GetBytes_HEX();
             if (cmbCheck.SelectedIndex <= 0)
             {
                 return bytes;
@@ -991,6 +916,16 @@ namespace SerialPortForward
         {
             listPlugins[pluginIndex].Option();
         }
+        FrmBitAnalysis frm;
+        private void btnBit_Click(object sender, EventArgs e)
+        {
+            if (frm == null || frm.IsDisposed)
+            {
+                frm = new FrmBitAnalysis();
+            }
+            frm.Show();
+            frm.Activate();
+        }
 
         void DebugSend(SerialPortInfo sp, byte[] bytes)
         {
@@ -1000,7 +935,7 @@ namespace SerialPortForward
             }
             if (sp == com2)
             {
-                lastSendHex = ByteToHex(bytes);
+                lastSendHex = bytes.GetString_HEX("");
             }
             sp.Write(bytes, 0, bytes.Length);
             serialLog1.AddLog("串口调试-" + timerSendToName, Color.OrangeRed, bytes);
