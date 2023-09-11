@@ -1,4 +1,6 @@
-﻿namespace SerialPortForward
+﻿using ITLDG;
+
+namespace SerialPortForward
 {
     partial class FrmMain
     {
@@ -48,7 +50,7 @@
             this.txtName2 = new System.Windows.Forms.TextBox();
             this.btnCom1 = new System.Windows.Forms.Button();
             this.btnCom2 = new System.Windows.Forms.Button();
-            this.serialLog1 = new ITLDG.SerialLog.SerialLog();
+            this.serialLog1 = new ITLDG.SerialLog();
             this.timerCom1 = new System.Windows.Forms.Timer(this.components);
             this.timerCom2 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -80,7 +82,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslTip = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerTip = new System.Windows.Forms.Timer(this.components);
-            this.txtSendHex = new SerialPortForward.HexTextBox();
+            this.txtSendHex = new HexTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnPluginOption = new System.Windows.Forms.Button();
             this.btnBit = new System.Windows.Forms.Button();
@@ -313,7 +315,7 @@
             this.serialLog1.Name = "serialLog1";
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
             this.serialLog1.SerialLogEnglishFontFamily = "Consolas";
-            this.serialLog1.SerialLogType = ITLDG.SerialLog.LogType.HEX_And_TEXT;
+            this.serialLog1.SerialLogType = ITLDG.LogType.HEX_And_TEXT;
             this.serialLog1.Size = new System.Drawing.Size(785, 309);
             this.serialLog1.TabIndex = 38;
             // 
@@ -753,7 +755,7 @@
         private System.Windows.Forms.TextBox txtName2;
         private System.Windows.Forms.Button btnCom1;
         private System.Windows.Forms.Button btnCom2;
-        private ITLDG.SerialLog.SerialLog serialLog1;
+        private ITLDG.SerialLog serialLog1;
         private System.Windows.Forms.Timer timerCom1;
         private System.Windows.Forms.Timer timerCom2;
         private System.Windows.Forms.GroupBox groupBox1;

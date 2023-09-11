@@ -1,4 +1,6 @@
-﻿namespace SerialPortForward
+﻿using ITLDG;
+
+namespace SerialPortForward
 {
     partial class HexAutoAnswer
     {
@@ -30,8 +32,8 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtReceiv = new SerialPortForward.HexTextBox();
-            this.txtReply = new SerialPortForward.HexTextBox();
+            this.txtReceiv = new HexTextBox();
+            this.txtReply = new HexTextBox();
             this.btnRemove = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 

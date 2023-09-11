@@ -218,7 +218,7 @@ namespace SerialPortForward
 
             serialLog1.LogEnable = ini.IniReadValue("Log", "Enable", "True") == "True";
             serialLog1.LogAutoScroll = ini.IniReadValue("Log", "AutoScroll", "True") == "True";
-            serialLog1.SerialLogType = (ITLDG.SerialLog.LogType)Convert.ToInt32(ini.IniReadValue("Log", "LogType", "0"));
+            serialLog1.SerialLogType = (ITLDG.LogType)Convert.ToInt32(ini.IniReadValue("Log", "LogType", "0"));
         }
         void SaveSerialOption()
         {
