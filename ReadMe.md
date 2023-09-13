@@ -22,7 +22,7 @@
 
 ### 插件方法
 
-插件示例:[仓库地址](/itldg/SerialPortForwardPluginExample)
+插件示例:[Gitee](https://gitee.com/itldg/SerialPortForwardPluginExample)  [GitHub](https://github.com/itldg/SerialPortForwardPluginExample)
 
 ```csharp
 public interface IPlugin
