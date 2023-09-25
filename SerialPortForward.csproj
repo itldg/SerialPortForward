@@ -43,11 +43,11 @@
     <Reference Include="ITLDG.DataCheck, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ITLDG.DataCheck.1.0.2\lib\netstandard2.0\ITLDG.DataCheck.dll</HintPath>
     </Reference>
-    <Reference Include="ITLDG.HexTextBox, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ITLDG.HexTextBox.1.0.1\lib\net48\ITLDG.HexTextBox.dll</HintPath>
+    <Reference Include="ITLDG.HexTextBox, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ITLDG.HexTextBox.1.0.3\lib\net48\ITLDG.HexTextBox.dll</HintPath>
     </Reference>
-    <Reference Include="ITLDG.SerialLog, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ITLDG.SerialLog.1.1.0\lib\net48\ITLDG.SerialLog.dll</HintPath>
+    <Reference Include="ITLDG.SerialLog, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ITLDG.SerialLog.1.1.2\lib\net48\ITLDG.SerialLog.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
