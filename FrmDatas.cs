@@ -67,6 +67,12 @@ namespace SerialPortForward
                     MessageBox.Show("请检查数据全部是否为HEX格式");
                     return;
                 }
+                if (dicNew.ContainsKey(autoAnswer.ReceivHex))
+                {
+                    MessageBox.Show("收到的数据："+autoAnswer.ReceivHex, "重复添加");
+                    autoAnswer.txtReceiv.Focus();
+                    return;
+                }
                 dicNew.Add(autoAnswer.ReceivHex, autoAnswer.ReplyHex);
             }
 
