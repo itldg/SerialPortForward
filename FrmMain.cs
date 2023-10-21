@@ -680,7 +680,11 @@ namespace SerialPortForward
                 {
                     dicCache.Clear();
                     string jsonStr = File.ReadAllText(ofd.FileName);
-                    dicCache = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
+                    Dictionary<string, string> dicCacheTemp = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
+                    foreach (var item in dicCacheTemp)
+                    {
+                        dicCache.Add(item.Key.Replace(" ", ""), item.Value.Replace(" ", ""));
+                    }
                     UpCacheCount();
                 }
                 catch (Exception ex)
