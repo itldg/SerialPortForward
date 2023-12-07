@@ -40,8 +40,8 @@
     <Reference Include="ITLDG.BitConverterExtend, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ITLDG.BitConverterExtend.1.0.2\lib\netstandard2.0\ITLDG.BitConverterExtend.dll</HintPath>
     </Reference>
-    <Reference Include="ITLDG.DataCheck, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ITLDG.DataCheck.1.0.2\lib\netstandard2.0\ITLDG.DataCheck.dll</HintPath>
+    <Reference Include="ITLDG.DataCheck, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ITLDG.DataCheck.1.0.3\lib\netstandard2.0\ITLDG.DataCheck.dll</HintPath>
     </Reference>
     <Reference Include="ITLDG.HexTextBox, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ITLDG.HexTextBox.1.0.3\lib\net48\ITLDG.HexTextBox.dll</HintPath>
@@ -49,12 +49,21 @@
     <Reference Include="ITLDG.SerialLog, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ITLDG.SerialLog.1.1.2\lib\net48\ITLDG.SerialLog.dll</HintPath>
     </Reference>
+    <Reference Include="ITLDG.SerialPortExtend, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ITLDG.SerialPortExtend.1.0.1\lib\netstandard2.0\ITLDG.SerialPortExtend.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.CodeDom, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.CodeDom.8.0.0\lib\net462\System.CodeDom.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Ports, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Ports.7.0.0\lib\net462\System.IO.Ports.dll</HintPath>
+    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

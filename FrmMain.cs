@@ -1,8 +1,8 @@
 ﻿using DotNet.Utilities;
 using ITLDG;
 using ITLDG.DataCheck;
+using ITLDG.SerialPortExtend;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,13 +11,11 @@ using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Management;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace SerialPortForward
 {
@@ -966,46 +964,10 @@ namespace SerialPortForward
             List<string> strs = new List<string>();
             Task.Run(() =>
             {
-                while (true)
+                SerialPortExtensions.GetPortNames().ForEach(x =>
                 {
-                    try
-                    {
-                        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_PnPEntity");
-                        Regex regExp = new Regex("\\(COM\\d+\\)");
-                        foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
-                        {
-                            if ((queryObj["Caption"] != null) && regExp.IsMatch(queryObj["Caption"].ToString()))
-                            {
-                                strs.Add(queryObj["Caption"].ToString());
-                            }
-                        }
-                        break;
-                    }
-                    catch
-                    {
-                        Task.Delay(500).Wait();
-                    }
-                    //MessageBox.Show("fail了");
-                }
-
-                try
-                {
-                    foreach (string p in SerialPort.GetPortNames())//加上缺少的com口
-                    {
-                        bool notMatch = true;
-                        foreach (string n in strs)
-                        {
-                            if (n.Contains($"({p})"))//如果和选中项目匹配
-                            {
-                                notMatch = false;
-                                break;
-                            }
-                        }
-                        if (notMatch)
-                            strs.Add($"Serial Port {p} ({p})");//如果列表中没有，就自己加上
-                    }
-                }
-                catch { }
+                    strs.Add(x.COM.PadRight(5,' ') + " - " + x.Name);
+                });
 
                 this.Invoke((MethodInvoker)delegate ()
                 {
