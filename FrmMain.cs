@@ -126,7 +126,7 @@ namespace SerialPortForward
         }
 
         //Regex regGetComName = new Regex("\\((COM(\\d+))");
-        Regex regGetComName = new Regex("^(COM(\\d+))",RegexOptions.Multiline);
+        Regex regGetComName = new Regex("^(COM(\\d+))", RegexOptions.Multiline);
         public string GetCom(string ComName)
         {
             //strs.Add(x.COM.PadRight(5, ' ') + " - " 
@@ -767,15 +767,15 @@ namespace SerialPortForward
             {
                 return bytes;
             }
-            int start = (int)nudCheckStart.Value;
-            int end = (int)nudCheckEnd.Value;
-            if (start < 0 || end < 0 || start > bytes.Length || end >= bytes.Length)
+            int start = (int)nudCheckStart.Value - 1;
+            int end = (int)nudCheckEnd.Value - 1;
+            if (start < 0 || end < 0 || start >= bytes.Length || end >= bytes.Length)
             {
                 return bytes;
             }
-            int bytesLength = (bytes.Length - end) - start + 1;
+            int bytesLength = (bytes.Length - end) - start;
             byte[] bytesCheck = new byte[bytesLength];
-            Array.Copy(bytes, start - 1, bytesCheck, 0, bytesLength);
+            Array.Copy(bytes, start, bytesCheck, 0, bytesLength);
 
             int checkIndex = cmbCheck.SelectedIndex - 1;
             byte[] bytesCheckResult = listCheckPlugins[checkIndex].CheckData(bytesCheck);

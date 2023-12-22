@@ -82,7 +82,7 @@ namespace SerialPortForward
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslTip = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerTip = new System.Windows.Forms.Timer(this.components);
-            this.txtSendHex = new HexTextBox();
+            this.txtSendHex = new ITLDG.HexTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnPluginOption = new System.Windows.Forms.Button();
             this.btnBit = new System.Windows.Forms.Button();
@@ -530,9 +530,24 @@ namespace SerialPortForward
             // nudCheckEnd
             // 
             this.nudCheckEnd.Location = new System.Drawing.Point(640, 60);
+            this.nudCheckEnd.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudCheckEnd.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudCheckEnd.Name = "nudCheckEnd";
             this.nudCheckEnd.Size = new System.Drawing.Size(52, 21);
             this.nudCheckEnd.TabIndex = 45;
+            this.nudCheckEnd.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label14
             // 
@@ -635,7 +650,10 @@ namespace SerialPortForward
             // 
             this.txtSendHex.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSendHex.HexMode = true;
+            this.txtSendHex.HexSeparator = ' ';
             this.txtSendHex.Location = new System.Drawing.Point(224, 89);
+            this.txtSendHex.MaxHexLength = 10923;
             this.txtSendHex.Name = "txtSendHex";
             this.txtSendHex.Size = new System.Drawing.Size(509, 21);
             this.txtSendHex.TabIndex = 43;
