@@ -972,11 +972,11 @@ namespace SerialPortForward
                         string name = strs[i];
                         cmbCom1.Items.Add(name);
                         cmbCom2.Items.Add(name);
-                        if (name.Contains($"({com1.PortName})"))
+                        if (name.StartsWith(com1.PortName + " "))
                         {
                             cmbCom1.SelectedIndex = i;
                         }
-                        if (name.Contains($"({com2.PortName})"))
+                        if (name.StartsWith(com2.PortName + " "))
                         {
                             cmbCom2.SelectedIndex = i;
                         }
