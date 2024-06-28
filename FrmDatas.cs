@@ -69,7 +69,7 @@ namespace SerialPortForward
                 }
                 if (dicNew.ContainsKey(autoAnswer.ReceivHex))
                 {
-                    MessageBox.Show("收到的数据："+autoAnswer.ReceivHex, "重复添加");
+                    MessageBox.Show("第 " + (i + 1) + " 条与后面的数据重复\n数据内容：" + autoAnswer.ReceivHex, "重复添加", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     autoAnswer.txtReceiv.Focus();
                     return;
                 }
