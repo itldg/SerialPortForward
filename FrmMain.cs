@@ -30,6 +30,7 @@ namespace SerialPortForward
         string CheckToolPath = "";
         int tipIndex = -1;
         string[] tips = new string[] { "本软件主要作用是转发两个串口的数据,搭配虚拟串口更好用", "校验位如果不是增加在末尾,请在HEX中填写一个错误的校验占位", "定时发送时间设置不要过小,否则可能会引起卡顿" };
+        //插件索引,-1为不使用插件
         int pluginIndex = -1;
         /// <summary>
         /// 记录数据
@@ -73,10 +74,10 @@ namespace SerialPortForward
             try
             {
                 spReceive.Listening = true;
-                if (spReceive.TimeOut > 0)
-                {
-                    System.Threading.Thread.Sleep(spReceive.TimeOut);
-                }
+                //if (spReceive.TimeOut > 0)
+                //{
+                //    System.Threading.Thread.Sleep(spReceive.TimeOut);
+                //}
                 //分包写法
                 List<byte> result = new List<byte>();
                 while (true)//循环读
@@ -279,6 +280,7 @@ namespace SerialPortForward
         {
             pluginCommon = new PluginCommon(com1, com2, PluginWrite);
             string[] files = Directory.GetFiles(Application.StartupPath + "\\Plugins", "*.dll");
+            cmbPlugins.Items.Add("不使用");
             foreach (string file in files)
             {
                 try
@@ -731,9 +733,17 @@ namespace SerialPortForward
                 }
 
             }
-            pluginIndex = cmbPlugins.SelectedIndex;
-            btnPluginOption.Enabled = listPlugins[pluginIndex].HasOption;
-            listPlugins[pluginIndex].Checked(pluginCommon);
+            pluginIndex = cmbPlugins.SelectedIndex - 1;
+            if (pluginIndex >= 0)
+            {
+                btnPluginOption.Enabled = listPlugins[pluginIndex].HasOption;
+                listPlugins[pluginIndex].Checked(pluginCommon);
+            }
+            else
+            {
+                btnPluginOption.Enabled = false;
+            }
+
         }
 
         private void btnClearCache_Click(object sender, EventArgs e)
