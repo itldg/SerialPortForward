@@ -116,7 +116,10 @@ namespace SerialPortForward
                 }
 
                 byte[] byteRead = result.ToArray();
-                AddLog(byteRead, name, isCom1, openForward, spReceive, spSend);
+                Task.Run(() =>
+                {
+                    AddLog(byteRead, name, isCom1, openForward, spReceive, spSend);
+                });
             }
             finally
             {
@@ -405,7 +408,6 @@ namespace SerialPortForward
         /// <param name="isAuto">这条消息是否来自自动回复</param>
         private void AddLog(byte[] data, string name, bool isCom1, bool openForward, SerialPort spReceive, SerialPort spSend, bool isAuto = false)
         {
-
             byte[] rep = null;
             if (!isAuto && pluginIndex >= 0)
             {
