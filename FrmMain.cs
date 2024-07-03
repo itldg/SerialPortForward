@@ -628,7 +628,16 @@ namespace SerialPortForward
             {
                 try
                 {
-                    string jsonStr = JsonConvert.SerializeObject(dicCache);
+                    Dictionary<string, string> dicJson = new Dictionary<string, string>();
+                    foreach (var item in dicCache)
+                    {
+                        dicJson.Add(item.Key.GetBytes_HEX().GetString_HEX(), item.Value.GetString_HEX());
+                    }
+                    var settings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented
+                    };
+                    string jsonStr = JsonConvert.SerializeObject(dicJson, settings);
                     File.WriteAllText(sfd.FileName, jsonStr);
                     MessageBox.Show("保存成功");
                 }
