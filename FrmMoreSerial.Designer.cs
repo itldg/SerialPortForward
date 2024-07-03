@@ -31,7 +31,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMoreSerial));
             this.btnSave = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtCom2IP = new System.Windows.Forms.TextBox();
+            this.nudCom2TimeOut = new System.Windows.Forms.NumericUpDown();
+            this.nudCom2Port = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.nudCom2Timer = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.cbCom2RTS = new System.Windows.Forms.CheckBox();
             this.cbCom2DTR = new System.Windows.Forms.CheckBox();
@@ -42,6 +49,13 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtCom1IP = new System.Windows.Forms.TextBox();
+            this.nudCom1Port = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.nudCom1TimeOut = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
             this.nudCom1Timer = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.cbCom1RTS = new System.Windows.Forms.CheckBox();
@@ -53,21 +67,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.nudCom2TimeOut = new System.Windows.Forms.NumericUpDown();
-            this.label11 = new System.Windows.Forms.Label();
-            this.nudCom1TimeOut = new System.Windows.Forms.NumericUpDown();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom2TimeOut)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom2Port)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCom2Timer)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCom1Timer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCom2TimeOut)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom1Port)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCom1TimeOut)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom1Timer)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(182, 270);
+            this.btnSave.Location = new System.Drawing.Point(177, 354);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(86, 36);
             this.btnSave.TabIndex = 4;
@@ -77,9 +89,14 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtCom2IP);
             this.groupBox2.Controls.Add(this.nudCom2TimeOut);
+            this.groupBox2.Controls.Add(this.nudCom2Port);
             this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label15);
+            this.groupBox2.Controls.Add(this.label16);
             this.groupBox2.Controls.Add(this.nudCom2Timer);
+            this.groupBox2.Controls.Add(this.label17);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.cbCom2RTS);
             this.groupBox2.Controls.Add(this.cbCom2DTR);
@@ -89,12 +106,81 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(237, 12);
+            this.groupBox2.Location = new System.Drawing.Point(237, 34);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(202, 219);
+            this.groupBox2.Size = new System.Drawing.Size(202, 314);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "串口2";
+            // 
+            // txtCom2IP
+            // 
+            this.txtCom2IP.Location = new System.Drawing.Point(63, 248);
+            this.txtCom2IP.Name = "txtCom2IP";
+            this.txtCom2IP.Size = new System.Drawing.Size(120, 21);
+            this.txtCom2IP.TabIndex = 17;
+            this.txtCom2IP.Text = "0.0.0.0";
+            // 
+            // nudCom2TimeOut
+            // 
+            this.nudCom2TimeOut.Location = new System.Drawing.Point(64, 132);
+            this.nudCom2TimeOut.Maximum = new decimal(new int[] {
+            1410065408,
+            2,
+            0,
+            0});
+            this.nudCom2TimeOut.Name = "nudCom2TimeOut";
+            this.nudCom2TimeOut.Size = new System.Drawing.Size(120, 21);
+            this.nudCom2TimeOut.TabIndex = 7;
+            // 
+            // nudCom2Port
+            // 
+            this.nudCom2Port.Location = new System.Drawing.Point(63, 283);
+            this.nudCom2Port.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudCom2Port.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudCom2Port.Name = "nudCom2Port";
+            this.nudCom2Port.Size = new System.Drawing.Size(120, 21);
+            this.nudCom2Port.TabIndex = 16;
+            this.nudCom2Port.Value = new decimal(new int[] {
+            8866,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(16, 135);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(53, 12);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "合并包：";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(16, 286);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(41, 12);
+            this.label15.TabIndex = 14;
+            this.label15.Text = "端口：";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(16, 251);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(41, 12);
+            this.label16.TabIndex = 15;
+            this.label16.Text = "I  P：";
             // 
             // nudCom2Timer
             // 
@@ -107,6 +193,15 @@
             this.nudCom2Timer.Name = "nudCom2Timer";
             this.nudCom2Timer.Size = new System.Drawing.Size(120, 21);
             this.nudCom2Timer.TabIndex = 7;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(32, 224);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(137, 12);
+            this.label17.TabIndex = 13;
+            this.label17.Text = "- - -  网络串口  - - -";
             // 
             // label8
             // 
@@ -208,6 +303,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.txtCom1IP);
+            this.groupBox1.Controls.Add(this.nudCom1Port);
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.nudCom1TimeOut);
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.nudCom1Timer);
@@ -220,12 +320,90 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(202, 219);
+            this.groupBox1.Size = new System.Drawing.Size(202, 314);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "串口1";
+            // 
+            // txtCom1IP
+            // 
+            this.txtCom1IP.Location = new System.Drawing.Point(63, 248);
+            this.txtCom1IP.Name = "txtCom1IP";
+            this.txtCom1IP.Size = new System.Drawing.Size(120, 21);
+            this.txtCom1IP.TabIndex = 12;
+            this.txtCom1IP.Text = "0.0.0.0";
+            // 
+            // nudCom1Port
+            // 
+            this.nudCom1Port.Location = new System.Drawing.Point(63, 283);
+            this.nudCom1Port.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudCom1Port.Minimum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.nudCom1Port.Name = "nudCom1Port";
+            this.nudCom1Port.Size = new System.Drawing.Size(120, 21);
+            this.nudCom1Port.TabIndex = 11;
+            this.nudCom1Port.Value = new decimal(new int[] {
+            8866,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(16, 286);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(41, 12);
+            this.label13.TabIndex = 9;
+            this.label13.Text = "端口：";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(16, 251);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(41, 12);
+            this.label14.TabIndex = 10;
+            this.label14.Text = "I  P：";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(32, 224);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(137, 12);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "- - -  网络串口  - - -";
+            // 
+            // nudCom1TimeOut
+            // 
+            this.nudCom1TimeOut.Location = new System.Drawing.Point(64, 132);
+            this.nudCom1TimeOut.Maximum = new decimal(new int[] {
+            1410065408,
+            2,
+            0,
+            0});
+            this.nudCom1TimeOut.Name = "nudCom1TimeOut";
+            this.nudCom1TimeOut.Size = new System.Drawing.Size(120, 21);
+            this.nudCom1TimeOut.TabIndex = 7;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(16, 135);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(53, 12);
+            this.label11.TabIndex = 6;
+            this.label11.Text = "合并包：";
             // 
             // nudCom1Timer
             // 
@@ -242,7 +420,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 167);
+            this.label7.Location = new System.Drawing.Point(16, 167);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(53, 12);
             this.label7.TabIndex = 6;
@@ -340,59 +518,17 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(10, 244);
+            this.label9.Location = new System.Drawing.Point(12, 9);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(401, 12);
             this.label9.TabIndex = 5;
             this.label9.Text = "* 如果轮询查不等于0，串口收到数据将不会进入中断,需要自行时钟内处理";
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(16, 135);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(53, 12);
-            this.label10.TabIndex = 6;
-            this.label10.Text = "合并包：";
-            // 
-            // nudCom2TimeOut
-            // 
-            this.nudCom2TimeOut.Location = new System.Drawing.Point(64, 132);
-            this.nudCom2TimeOut.Maximum = new decimal(new int[] {
-            1410065408,
-            2,
-            0,
-            0});
-            this.nudCom2TimeOut.Name = "nudCom2TimeOut";
-            this.nudCom2TimeOut.Size = new System.Drawing.Size(120, 21);
-            this.nudCom2TimeOut.TabIndex = 7;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(16, 135);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(53, 12);
-            this.label11.TabIndex = 6;
-            this.label11.Text = "合并包：";
-            // 
-            // nudCom1TimeOut
-            // 
-            this.nudCom1TimeOut.Location = new System.Drawing.Point(64, 132);
-            this.nudCom1TimeOut.Maximum = new decimal(new int[] {
-            1410065408,
-            2,
-            0,
-            0});
-            this.nudCom1TimeOut.Name = "nudCom1TimeOut";
-            this.nudCom1TimeOut.Size = new System.Drawing.Size(120, 21);
-            this.nudCom1TimeOut.TabIndex = 7;
-            // 
             // FrmMoreSerial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(456, 317);
+            this.ClientSize = new System.Drawing.Size(456, 397);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox2);
@@ -407,12 +543,14 @@
             this.Load += new System.EventHandler(this.FrmMoreSerial_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom2TimeOut)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom2Port)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCom2Timer)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCom1Timer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCom2TimeOut)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom1Port)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCom1TimeOut)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCom1Timer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -448,5 +586,15 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown nudCom1TimeOut;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txtCom2IP;
+        private System.Windows.Forms.NumericUpDown nudCom2Port;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox txtCom1IP;
+        private System.Windows.Forms.NumericUpDown nudCom1Port;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label12;
     }
 }

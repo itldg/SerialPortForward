@@ -8,6 +8,8 @@
 
 ![主界面](docs/main.png '主界面')
 
+![串口设置](docs/serial_option.png '串口设置')
+
 ![自动应答](docs/data.png '自动应答')
 
 ![位分析](docs/bit.png '位分析')
@@ -19,6 +21,7 @@
 ### 实现功能
 
 -   串口转发(自定义设置分包合并和轮询)
+-   网络串口(TCP Server,TCP Client)
 -   协议记录,支持编辑自动回复
 -   定时发送和手动发送消息给串口
 -   发送数据自动计算校验,可自己开发校验插件
@@ -26,7 +29,7 @@
 
 ### 插件方法
 
-插件示例:[Gitee](https://gitee.com/itldg/SerialPortForwardPluginExample)  [GitHub](https://github.com/itldg/SerialPortForwardPluginExample)
+插件示例:[Gitee](https://gitee.com/itldg/SerialPortForwardPluginExample) [GitHub](https://github.com/itldg/SerialPortForwardPluginExample)
 
 ```csharp
 public interface IPlugin

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ITLDG;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -7,28 +8,26 @@ namespace SerialPortForward
 {
     public partial class FrmDatas : Form
     {
-        Dictionary<string, string> oldDic;
-        public delegate void SaveDatas(Dictionary<string, string> dic);
+        Dictionary<string, byte[]> oldDic;
+        public delegate void SaveDatas(Dictionary<string, byte[]> dic);
         /// <summary>
         /// 保存了新的应答数据
         /// </summary>
         public event SaveDatas SaveDatasEvent;
-        public FrmDatas(Dictionary<string, string> dic)
+        public FrmDatas(Dictionary<string, byte[]> dic)
         {
             InitializeComponent();
             oldDic = dic;
         }
-        void ShowList(Dictionary<string, string> dic)
+        void ShowList(Dictionary<string, byte[]> dic)
         {
             foreach (var item in dic)
             {
-                AddData(item.Key, item.Value);
+                AddData(item.Key, item.Value.GetString_HEX());
             }
         }
         void AddData(string Receiv = "", string Reply = "")
         {
-
-
             HexAutoAnswer autoAnswer = new HexAutoAnswer(Receiv, Reply);
 
             autoAnswer.RemoveSelfEvent += (HexAutoAnswer hexAutoAnswer) =>
@@ -56,7 +55,7 @@ namespace SerialPortForward
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            Dictionary<string, string> dicNew = new Dictionary<string, string>();
+            Dictionary<string, byte[]> dicNew = new Dictionary<string, byte[]>();
             //按照控件顺序倒叙保存
             int max = tableLayoutPanel1.Controls.Count;
             for (int i = max - 1; i >= 0; i--)
@@ -73,7 +72,7 @@ namespace SerialPortForward
                     autoAnswer.txtReceiv.Focus();
                     return;
                 }
-                dicNew.Add(autoAnswer.ReceivHex, autoAnswer.ReplyHex);
+                dicNew.Add(autoAnswer.ReceivHex, autoAnswer.ReplyHex.GetBytes_HEX());
             }
 
 

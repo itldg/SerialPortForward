@@ -51,8 +51,6 @@ namespace SerialPortForward
             this.btnCom1 = new System.Windows.Forms.Button();
             this.btnCom2 = new System.Windows.Forms.Button();
             this.serialLog1 = new ITLDG.SerialLog();
-            this.timerCom1 = new System.Windows.Forms.Timer(this.components);
-            this.timerCom2 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblDataCount = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
@@ -318,14 +316,6 @@ namespace SerialPortForward
             this.serialLog1.SerialLogType = ITLDG.LogType.HEX_And_TEXT;
             this.serialLog1.Size = new System.Drawing.Size(785, 309);
             this.serialLog1.TabIndex = 38;
-            // 
-            // timerCom1
-            // 
-            this.timerCom1.Tick += new System.EventHandler(this.timerCom1_Tick);
-            // 
-            // timerCom2
-            // 
-            this.timerCom2.Tick += new System.EventHandler(this.timerCom2_Tick);
             // 
             // groupBox1
             // 
@@ -654,6 +644,7 @@ namespace SerialPortForward
             this.txtSendHex.HexSeparator = ' ';
             this.txtSendHex.Location = new System.Drawing.Point(224, 89);
             this.txtSendHex.MaxHexLength = 10923;
+            this.txtSendHex.MaxLength = 32768;
             this.txtSendHex.Name = "txtSendHex";
             this.txtSendHex.Size = new System.Drawing.Size(509, 21);
             this.txtSendHex.TabIndex = 43;
@@ -774,8 +765,6 @@ namespace SerialPortForward
         private System.Windows.Forms.Button btnCom1;
         private System.Windows.Forms.Button btnCom2;
         private ITLDG.SerialLog serialLog1;
-        private System.Windows.Forms.Timer timerCom1;
-        private System.Windows.Forms.Timer timerCom2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox chkRecordData;
         private System.Windows.Forms.Label label3;

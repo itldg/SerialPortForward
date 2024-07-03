@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,8 +25,8 @@ namespace SerialPortForward
             this.com1 = com1;
             this.com2 = com2;
 
-            ShowPort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS, nudCom1Timer, nudCom1TimeOut);
-            ShowPort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer, nudCom2TimeOut);
+            ShowPort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS, nudCom1Timer, nudCom1TimeOut, txtCom1IP, nudCom1Port);
+            ShowPort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer, nudCom2TimeOut, txtCom2IP, nudCom2Port);
         }
         private void FrmMoreSerial_Load(object sender, EventArgs e)
         {
@@ -35,11 +36,19 @@ namespace SerialPortForward
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            SavePort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS, nudCom1Timer, nudCom1TimeOut);
-            SavePort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer, nudCom2TimeOut);
-            DialogResult = DialogResult.OK;
+            try
+            {
+                SavePort(com1, cmbCom1Stop, cmbCom1Data, cmbCom1Parity, cbCom1DTR, cbCom1RTS, nudCom1Timer, nudCom1TimeOut, txtCom1IP, nudCom1Port);
+                SavePort(com2, cmbCom2Stop, cmbCom2Data, cmbCom2Parity, cbCom2DTR, cbCom2RTS, nudCom2Timer, nudCom2TimeOut, txtCom2IP, nudCom2Port);
+                DialogResult = DialogResult.OK;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "输入错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
         }
-        void ShowPort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer, NumericUpDown nudTimeOut)
+        void ShowPort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer, NumericUpDown nudTimeOut, TextBox txtIP, NumericUpDown nudPort)
         {
 
             switch (sp.StopBits)
@@ -95,9 +104,12 @@ namespace SerialPortForward
             cbRTS.Checked = sp.RtsEnable;
             nudTimer.Value = sp.Timer;
             nudTimeOut.Value = sp.TimeOut;
+
+            txtIP.Text = sp.IP.ToString();
+            nudPort.Value = sp.Port;
         }
 
-        void SavePort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer, NumericUpDown nudTimeOut)
+        void SavePort(SerialPortInfo sp, ComboBox cmbStop, ComboBox cmbData, ComboBox cmbParity, CheckBox cbDTR, CheckBox cbRTS, NumericUpDown nudTimer, NumericUpDown nudTimeOut, TextBox txtIP, NumericUpDown nudPort)
         {
             switch (cmbStop.SelectedIndex)
             {
@@ -135,6 +147,8 @@ namespace SerialPortForward
             sp.RtsEnable = cbRTS.Checked;
             sp.Timer = (int)nudTimer.Value;
             sp.TimeOut = (int)nudTimeOut.Value;
+            sp.IP = IPAddress.Parse(txtIP.Text);
+            sp.Port = (int)nudPort.Value;
         }
     }
 }

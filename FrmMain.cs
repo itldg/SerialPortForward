@@ -11,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,7 +22,7 @@ namespace SerialPortForward
 {
     public partial class FrmMain : Form
     {
-        private Dictionary<string, string> dicCache = new Dictionary<string, string>();
+        private Dictionary<string, byte[]> dicCache = new Dictionary<string, byte[]>();
         private string lastSendHex = "";
         string iniFile = Application.StartupPath + "\\config.ini";
         string pluginDir = Application.StartupPath + "\\plugins\\";
@@ -51,14 +52,14 @@ namespace SerialPortForward
         bool com1Forward = true, com2Forward = true;
         PluginCommon pluginCommon;
 
-        private void Com2_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        void Com2_DataReceived(object sender, byte[] data)
         {
-            DataReceivedHandle(com2Name, false, com2Forward, com2, com1);
+            DataReceivedHandle(com2Name, false, com2Forward, com2, com1, data);
         }
 
-        private void Com1_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        void Com1_DataReceived(object sender, byte[] data)
         {
-            DataReceivedHandle(com1Name, true, com1Forward, com1, com2);
+            DataReceivedHandle(com1Name, true, com1Forward, com1, com2, data);
         }
         /// <summary>
         /// 串口收到数据
@@ -68,68 +69,15 @@ namespace SerialPortForward
         /// <param name="openForward">是否勾选了转发</param>
         /// <param name="spReceive">收到消息的串口</param>
         /// <param name="spSend">准备转发的串口</param>
-        void DataReceivedHandle(string name, bool isCom1, bool openForward, SerialPortInfo spReceive, SerialPortInfo spSend)
+        /// <param name="data">收到的数据</param>
+        void DataReceivedHandle(string name, bool isCom1, bool openForward, SerialPortInfo spReceive, SerialPortInfo spSend, byte[] data)
         {
-            if (spReceive.CloseIng) { return; }
-            try
+            Task.Run(() =>
             {
-                spReceive.Listening = true;
-                //if (spReceive.TimeOut > 0)
-                //{
-                //    System.Threading.Thread.Sleep(spReceive.TimeOut);
-                //}
-                //分包写法
-                List<byte> result = new List<byte>();
-                while (true)//循环读
-                {
-                    if (spReceive.CloseIng || !spReceive.IsOpen)//串口被关了，不读了
-                    {
-                        break;
-                    }
-                    try
-                    {
-                        int length = spReceive.BytesToRead;
-                        if (length == 0)//没数据，退出去
-                            break;
-                        byte[] rev = new byte[length];
-                        spReceive.Read(rev, 0, length);//读数据
-                        if (rev.Length == 0)
-                            break;
-                        result.AddRange(rev);//加到list末尾
-                        if (result.Count > 1024)
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        break;
-                    }//崩了？
-
-                    if (spReceive.TimeOut > 0)
-                    {
-                        System.Threading.Thread.Sleep(spReceive.TimeOut);
-                    }
-                }
-                if (result.Count == 0)
-                {
-                    return;
-                }
-
-                byte[] byteRead = result.ToArray();
-                Task.Run(() =>
-                {
-                    AddLog(byteRead, name, isCom1, openForward, spReceive, spSend);
-                });
-            }
-            finally
-            {
-                spReceive.Listening = false;
-            }
-
+                AddLog(data, name, isCom1, openForward, spReceive, spSend);
+            });
         }
 
-        //Regex regGetComName = new Regex("\\((COM(\\d+))");
         Regex regGetComName = new Regex("^(COM(\\d+))", RegexOptions.Multiline);
         public string GetCom(string ComName)
         {
@@ -139,7 +87,7 @@ namespace SerialPortForward
             {
                 return match.Groups[1].Value;
             }
-            return "";
+            return ComName;
         }
 
         private void btnMoreSerialOption_Click(object sender, EventArgs e)
@@ -232,6 +180,8 @@ namespace SerialPortForward
             ini.IniWriteValue(Name, "BaudRate", sp.BaudRate.ToString());
             ini.IniWriteValue(Name, "Timer", sp.Timer.ToString());
             ini.IniWriteValue(Name, "TimeOut", sp.TimeOut.ToString());
+            ini.IniWriteValue(Name, "IP", sp.IP.ToString());
+            ini.IniWriteValue(Name, "Port", sp.Port.ToString());
         }
         void SerialOtherSave(INIFileHelper ini)
         {
@@ -270,6 +220,8 @@ namespace SerialPortForward
             sp.Timer = Convert.ToInt32(ini.IniReadValue(Name, "Timer", "0"));
             sp.TimeOut = Convert.ToInt32(ini.IniReadValue(Name, "TimeOut", "30"));
 
+            sp.IP = IPAddress.Parse(ini.IniReadValue(Name, "IP", "0.0.0.0"));
+            sp.Port = Convert.ToInt32(ini.IniReadValue(Name, "Port", "8866"));
             cmb.Text = sp.BaudRate.ToString();
         }
         private void btnReload_Click(object sender, EventArgs e)
@@ -372,6 +324,8 @@ namespace SerialPortForward
                 Directory.CreateDirectory(pluginDir);
             }
             Text += " V" + Application.ProductVersion;
+            com1.DataReceived += Com1_DataReceived;
+            com2.DataReceived += Com2_DataReceived;
         }
         void PluginWrite(IPlugin plugin, bool isCom1, byte[] bytes)
         {
@@ -408,7 +362,7 @@ namespace SerialPortForward
         /// <param name="spReceive">收到数据的串口</param>
         /// <param name="spSend">将转发到的串口</param>
         /// <param name="isAuto">这条消息是否来自自动回复</param>
-        private void AddLog(byte[] data, string name, bool isCom1, bool openForward, SerialPort spReceive, SerialPort spSend, bool isAuto = false)
+        private void AddLog(byte[] data, string name, bool isCom1, bool openForward, SerialPortInfo spReceive, SerialPortInfo spSend, bool isAuto = false)
         {
             byte[] rep = null;
             if (!isAuto && pluginIndex >= 0)
@@ -441,10 +395,9 @@ namespace SerialPortForward
             }
             if (isCom1 && AutoAnswer && dicCache.ContainsKey(hex))
             {
-                byte[] array = dicCache[hex].GetBytes_HEX();
-                spReceive.Write(array, 0, array.Length);
-                BitAnalysis(array);
-                AddLog(array, "自动应答-" + com2Name, isCom1: false, openForward: false, spSend, spReceive, true);
+                spReceive.Write(dicCache[hex], 0, dicCache[hex].Length);
+                BitAnalysis(dicCache[hex]);
+                AddLog(dicCache[hex], "自动应答-" + com2Name, isCom1: false, openForward: false, spSend, spReceive, true);
                 return;
             }
 
@@ -459,11 +412,11 @@ namespace SerialPortForward
             {
                 if (dicCache.ContainsKey(lastSendHex))
                 {
-                    dicCache[lastSendHex] = hex;
+                    dicCache[lastSendHex] = data;
                 }
                 else
                 {
-                    dicCache.Add(lastSendHex, hex);
+                    dicCache.Add(lastSendHex, data);
                 }
                 Invoke((MethodInvoker)delegate
                 {
@@ -492,7 +445,7 @@ namespace SerialPortForward
 
             });
         }
-        void OpenSerial(SerialPortInfo sp, Timer timerCom, SerialDataReceivedEventHandler serialDataReceived, ComboBox cmbCom, ComboBox cmbBaudRate, Button btnCom)
+        void OpenSerial(SerialPortInfo sp, ComboBox cmbCom, ComboBox cmbBaudRate, Button btnCom)
         {
 
             if (cmbCom.SelectedIndex < 0)
@@ -511,15 +464,6 @@ namespace SerialPortForward
             {
                 sp.PortName = comNameTemp;
                 sp.BaudRate = Convert.ToInt32(cmbBaudRate.Text);
-                if (sp.Timer > 0)
-                {
-                    timerCom.Interval = sp.Timer;
-                    timerCom.Enabled = true;
-                }
-                else
-                {
-                    sp.DataReceived += serialDataReceived;
-                }
                 sp.Open();
                 SaveSerialOption();
             }
@@ -536,9 +480,9 @@ namespace SerialPortForward
             });
 
         }
-        void CloseSerial(SerialPortInfo sp, Timer timerCom, ComboBox cmbCom, Button btnCom)
+        void CloseSerial(SerialPortInfo sp, ComboBox cmbCom, Button btnCom)
         {
-            timerCom.Enabled = false;
+
             try
             {
                 sp.Close();
@@ -558,11 +502,11 @@ namespace SerialPortForward
         {
             if (btnCom1.Text == "打开")
             {
-                OpenSerial(com1, timerCom1, Com1_DataReceived, cmbCom1, cmbBaudRate1, btnCom1);
+                OpenSerial(com1, cmbCom1, cmbBaudRate1, btnCom1);
             }
             else
             {
-                CloseSerial(com1, timerCom1, cmbCom1, btnCom1);
+                CloseSerial(com1, cmbCom1, btnCom1);
             }
 
         }
@@ -571,11 +515,11 @@ namespace SerialPortForward
         {
             if (btnCom2.Text == "打开")
             {
-                OpenSerial(com2, timerCom2, Com2_DataReceived, cmbCom2, cmbBaudRate2, btnCom2);
+                OpenSerial(com2, cmbCom2, cmbBaudRate2, btnCom2);
             }
             else
             {
-                CloseSerial(com2, timerCom2, cmbCom2, btnCom2);
+                CloseSerial(com2, cmbCom2, btnCom2);
             }
         }
 
@@ -662,7 +606,7 @@ namespace SerialPortForward
                     Dictionary<string, string> dicCacheTemp = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
                     foreach (var item in dicCacheTemp)
                     {
-                        dicCache.Add(item.Key.Replace(" ", ""), item.Value.Replace(" ", ""));
+                        dicCache.Add(item.Key.Replace(" ", ""), item.Value.Replace(" ", "").GetBytes_HEX());
                     }
                     UpCacheCount();
                 }
@@ -798,7 +742,7 @@ namespace SerialPortForward
             RecordData = temp;
         }
 
-        private void FrmDatas_SaveDatasEvent(Dictionary<string, string> dic)
+        private void FrmDatas_SaveDatasEvent(Dictionary<string, byte[]> dic)
         {
             dicCache = dic;
         }
@@ -928,11 +872,11 @@ namespace SerialPortForward
             {
                 if (sp == com1)
                 {
-                    CloseSerial(com1, timerCom1, cmbCom1, btnCom1);
+                    CloseSerial(com1, cmbCom1, btnCom1);
                 }
                 else
                 {
-                    CloseSerial(com2, timerCom2, cmbCom2, btnCom2);
+                    CloseSerial(com2, cmbCom2, btnCom2);
                 }
                 return;
             }
@@ -969,6 +913,8 @@ namespace SerialPortForward
                 {
                     strs.Add(x.COM.PadRight(5, ' ') + " - " + x.Name);
                 });
+                strs.Add(SerialPortInfo.SERIAL_TCP_SERVER);
+                strs.Add(SerialPortInfo.SERIAL_TCP_CLIENT);
 
                 this.Invoke((MethodInvoker)delegate ()
                 {
@@ -977,11 +923,11 @@ namespace SerialPortForward
                         string name = strs[i];
                         cmbCom1.Items.Add(name);
                         cmbCom2.Items.Add(name);
-                        if (name.StartsWith(com1.PortName + " "))
+                        if (name == com1.PortName || name.StartsWith(com1.PortName + " "))
                         {
                             cmbCom1.SelectedIndex = i;
                         }
-                        if (name.StartsWith(com2.PortName + " "))
+                        if (name == com2.PortName || name.StartsWith(com2.PortName + " "))
                         {
                             cmbCom2.SelectedIndex = i;
                         }
