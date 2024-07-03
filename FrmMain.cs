@@ -484,118 +484,99 @@ namespace SerialPortForward
                 frm.NewData(bytes);
             }
         }
+        void RunUI(Action action)
+        {
+            Invoke((MethodInvoker)delegate
+            {
+                action();
 
+            });
+        }
+        void OpenSerial(SerialPortInfo sp, Timer timerCom, SerialDataReceivedEventHandler serialDataReceived, ComboBox cmbCom, ComboBox cmbBaudRate, Button btnCom)
+        {
+
+            if (cmbCom.SelectedIndex < 0)
+            {
+                MessageBox.Show("未获取到串口号,不可以打开空的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string comNameTemp = GetCom(cmbCom.Text);
+            if ((sp == com1 ? com2 : com1).IsOpen && cmbCom1.Text == cmbCom2.Text)
+            {
+                MessageBox.Show("不可转发两个相同的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            try
+            {
+                sp.PortName = comNameTemp;
+                sp.BaudRate = Convert.ToInt32(cmbBaudRate.Text);
+                if (sp.Timer > 0)
+                {
+                    timerCom.Interval = sp.Timer;
+                    timerCom.Enabled = true;
+                }
+                else
+                {
+                    sp.DataReceived += serialDataReceived;
+                }
+                sp.Open();
+                SaveSerialOption();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            RunUI(() =>
+            {
+                cmbCom.Enabled = false;
+                btnCom.Text = "关闭";
+                CheckSendEnable();
+            });
+
+        }
+        void CloseSerial(SerialPortInfo sp, Timer timerCom, ComboBox cmbCom, Button btnCom)
+        {
+            timerCom.Enabled = false;
+            try
+            {
+                sp.Close();
+            }
+            catch (Exception)
+            {
+            }
+            RunUI(() =>
+            {
+                cmbCom.Enabled = true;
+                btnCom.Text = "打开";
+                CheckSendEnable();
+            });
+
+        }
         private void btnCom1_Click(object sender, EventArgs e)
         {
             if (btnCom1.Text == "打开")
             {
-                if (cmbCom1.SelectedIndex < 0)
-                {
-                    MessageBox.Show("未获取到串口号,不可以打开空的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                string com1NameTemp = GetCom(cmbCom1.Text);
-                if (com2.IsOpen && cmbCom1.Text == cmbCom2.Text)
-                {
-                    MessageBox.Show("不可转发两个相同的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                try
-                {
-                    com1.PortName = com1NameTemp;
-                    com1.BaudRate = Convert.ToInt32(cmbBaudRate1.Text);
-                    if (com1.Timer > 0)
-                    {
-                        timerCom1.Interval = com1.Timer;
-                        timerCom1.Enabled = true;
-                    }
-                    else
-                    {
-                        com1.DataReceived += Com1_DataReceived;
-                    }
-                    com1.Open();
-                    SaveSerialOption();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                cmbCom1.Enabled = false;
-                btnCom1.Text = "关闭";
-
+                OpenSerial(com1, timerCom1, Com1_DataReceived, cmbCom1, cmbBaudRate1, btnCom1);
             }
             else
             {
-                timerCom1.Enabled = false;
-                try
-                {
-                    com1.Close();
-                }
-                catch (Exception)
-                {
-                }
-                cmbCom1.Enabled = true;
-                btnCom1.Text = "打开";
+                CloseSerial(com1, timerCom1, cmbCom1, btnCom1);
             }
-            CheckSendEnable();
+
         }
 
         private void btnCom2_Click(object sender, EventArgs e)
         {
             if (btnCom2.Text == "打开")
             {
-                if (cmbCom2.SelectedIndex < 0)
-                {
-                    MessageBox.Show("未获取到串口号,不可以打开空的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                if (com1.IsOpen && cmbCom1.Text == cmbCom2.Text)
-                {
-                    MessageBox.Show("不可转发两个相同的串口", "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                string com2NameTemp = GetCom(cmbCom2.Text);
-                try
-                {
-                    com2.PortName = com2NameTemp;
-                    com2.BaudRate = Convert.ToInt32(cmbBaudRate2.Text);
-                    if (com2.Timer > 0)
-                    {
-                        timerCom2.Interval = com2.Timer;
-                        timerCom2.Enabled = true;
-                    }
-                    else
-                    {
-                        com2.DataReceived += Com2_DataReceived;
-                    }
-                    com2.Open();
-                    SaveSerialOption();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "打开失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                cmbCom2.Enabled = false;
-                btnCom2.Text = "关闭";
-
+                OpenSerial(com2, timerCom2, Com2_DataReceived, cmbCom2, cmbBaudRate2, btnCom2);
             }
             else
             {
-                timerCom2.Enabled = false;
-                try
-                {
-                    com2.Close();
-                }
-                catch (Exception)
-                {
-                }
-                cmbCom2.Enabled = true;
-                btnCom2.Text = "打开";
+                CloseSerial(com2, timerCom2, cmbCom2, btnCom2);
             }
-            CheckSendEnable();
         }
 
         void CheckSendEnable()
@@ -939,8 +920,20 @@ namespace SerialPortForward
 
         void DebugSend(SerialPortInfo sp, byte[] bytes)
         {
-            if (sp == null || !sp.IsOpen)
+            if (sp == null)
             {
+                return;
+            }
+            if (!sp.IsOpen)
+            {
+                if (sp == com1)
+                {
+                    CloseSerial(com1, timerCom1, cmbCom1, btnCom1);
+                }
+                else
+                {
+                    CloseSerial(com2, timerCom2, cmbCom2, btnCom2);
+                }
                 return;
             }
             if (sp == com2)
