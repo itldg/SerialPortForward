@@ -480,6 +480,17 @@ namespace SerialPortForward
             });
 
         }
+        void CloseSerial(SerialPortInfo sp)
+        {
+            if (sp == com1)
+            {
+                CloseSerial(com1, cmbCom1, btnCom1);
+            }
+            else
+            {
+                CloseSerial(com2, cmbCom2, btnCom2);
+            }
+        }
         void CloseSerial(SerialPortInfo sp, ComboBox cmbCom, Button btnCom)
         {
 
@@ -879,21 +890,24 @@ namespace SerialPortForward
             }
             if (!sp.IsOpen)
             {
-                if (sp == com1)
-                {
-                    CloseSerial(com1, cmbCom1, btnCom1);
-                }
-                else
-                {
-                    CloseSerial(com2, cmbCom2, btnCom2);
-                }
+                CloseSerial(sp);
                 return;
             }
             if (sp == com2)
             {
                 lastSendHex = bytes.GetString_HEX("");
             }
-            sp.Write(bytes, 0, bytes.Length);
+            try
+            {
+                sp.Write(bytes, 0, bytes.Length);
+            }
+            catch (Exception ex)
+            {
+                CloseSerial(sp);
+                MessageBox.Show(ex.Message, "发送失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
             serialLog1.AddLog("串口调试-" + timerSendToName, Color.OrangeRed, bytes);
         }
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)

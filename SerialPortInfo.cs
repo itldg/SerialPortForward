@@ -157,22 +157,38 @@ namespace SerialPortForward
                 IPEndPoint ipe = new IPEndPoint(IP, Port);
                 Socket s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                StateObject so = new StateObject();
-                s.BeginConnect(ipe, new AsyncCallback((r) =>
-                {
-                    var state = (Socket)r.AsyncState;
-                    if (!state.Connected)
-                    {
-                        _IsOpen = false;
-                        return;
 
-                    }
-                    if (!so.isSSL)
-                        socketNow = new SocketObj(state);
-                    _IsOpen = true;
-                    so.workSocket = state;
-                    state.BeginReceive(so.buffer, 0, StateObject.BUFFER_SIZE, 0, new AsyncCallback(Read_Callback), so);
-                }), s);
+                StateObject so = new StateObject();
+                try
+                {
+                    s.Connect(ipe);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                so.workSocket = s;
+                if (!so.isSSL)
+                {
+                    socketNow = new SocketObj(s);
+                }
+                s.BeginReceive(so.buffer, 0, StateObject.BUFFER_SIZE, 0, new AsyncCallback(Read_Callback), so);
+                _IsOpen = true;
+                //s.BeginConnect(ipe, new AsyncCallback((r) =>
+                //{
+                //    var state = (Socket)r.AsyncState;
+                //    if (!state.Connected)
+                //    {
+                //        _IsOpen = false;
+                //        return;
+
+                //    }
+                //    if (!so.isSSL)
+                //        socketNow = new SocketObj(state);
+                //    _IsOpen = true;
+                //    so.workSocket = state;
+                //    state.BeginReceive(so.buffer, 0, StateObject.BUFFER_SIZE, 0, new AsyncCallback(Read_Callback), so);
+                //}), s);
             }
             else
             {
