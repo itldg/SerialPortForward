@@ -94,5 +94,52 @@ namespace SerialPortForward
             HexAutoAnswer haa = tableLayoutPanel1.Controls[0] as HexAutoAnswer;
             haa.txtReceiv.Focus();
         }
+
+        private void htxtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r')
+            {
+                Search();
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            Search();
+        }
+        void Search()
+        {
+            string searchText = htxtSearch.HexText.Trim();
+            if (string.IsNullOrEmpty(searchText))
+            {
+                MessageBox.Show("请输入要搜索的内容");
+                return;
+            }
+            Regex regex = new Regex(searchText, RegexOptions.IgnoreCase);
+            bool found = false;
+            foreach (Control control in tableLayoutPanel1.Controls)
+            {
+                HexAutoAnswer haa = control as HexAutoAnswer;
+                if (haa == null) continue; // 确保是 HexAutoAnswer 控件
+                if (regex.IsMatch(haa.ReceivHex))
+                {
+                    haa.BringToFront();
+                    haa.txtReceiv.Focus();
+                    found = true;
+                    break;
+                }
+                if (regex.IsMatch(haa.ReplyHex))
+                {
+                    haa.BringToFront();
+                    haa.txtReply.Focus();
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                MessageBox.Show("未找到匹配的内容");
+            }
+        }
     }
 }
