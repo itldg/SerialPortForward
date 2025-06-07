@@ -617,7 +617,7 @@ namespace SerialPortForward
                     Dictionary<string, string> dicCacheTemp = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
                     foreach (var item in dicCacheTemp)
                     {
-                        dicCache.Add(item.Key.Replace(" ", ""), item.Value.Replace(" ", "").GetBytes_HEX());
+                        dicCache.Add(item.Key.GetBytes_HEX().GetString_HEX(""), item.Value.Replace(" ", "").GetBytes_HEX());
                     }
                     UpCacheCount();
                 }
