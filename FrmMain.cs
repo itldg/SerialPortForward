@@ -617,6 +617,11 @@ namespace SerialPortForward
                     Dictionary<string, string> dicCacheTemp = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
                     foreach (var item in dicCacheTemp)
                     {
+                        //可在文件中添加注释,自动跳过
+                        if (!IsHexString(item.Key) || !IsHexString(item.Value))
+                        {
+                            continue;
+                        }
                         dicCache.Add(item.Key.GetBytes_HEX().GetString_HEX(""), item.Value.Replace(" ", "").GetBytes_HEX());
                     }
                     UpCacheCount();
@@ -627,7 +632,26 @@ namespace SerialPortForward
                 }
             }
         }
+        /// <summary>
+        /// 判断字符串是否为HEX字符串
+        /// </summary>
+        /// <param name="str">要检查的字符串</param>
+        /// <returns>是否是HEX字符串</returns>
+        bool IsHexString(string str)
+        {
+            string temp = BitConverterExtend.RemoveHexSpace(str);
+            if (!Regex.IsMatch(temp, "^[0-9a-fA-F]+$"))
+            {
+                return false;
 
+            }
+            if (temp.Length % 2 != 0)
+            {
+                // HEX字符串长度必须是偶数
+                return false;
+            }
+            return true;
+        }
         private void Save()
         {
             SaveFileDialog sfd = new SaveFileDialog
@@ -907,7 +931,7 @@ namespace SerialPortForward
                 MessageBox.Show(ex.Message, "发送失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            
+
             serialLog1.AddLog("串口调试-" + timerSendToName, Color.OrangeRed, bytes);
         }
         void ComBaudChange(SerialPortInfo sp, ComboBox cmb)
