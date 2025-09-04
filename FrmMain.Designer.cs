@@ -309,6 +309,7 @@ namespace SerialPortForward
             this.serialLog1.Location = new System.Drawing.Point(10, 167);
             this.serialLog1.LogAutoScroll = true;
             this.serialLog1.LogEnable = true;
+            this.serialLog1.MaxLogCount = 500;
             this.serialLog1.MinimumSize = new System.Drawing.Size(560, 200);
             this.serialLog1.Name = "serialLog1";
             this.serialLog1.SerialLogChineseFontFamily = "Microsoft YaHei";
